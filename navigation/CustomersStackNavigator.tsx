@@ -1,0 +1,73 @@
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import CustomersScreen from "@/screens/CustomersScreen";
+import CustomerDetailScreen from "@/screens/CustomerDetailScreen";
+import NewCustomerScreen from "@/screens/NewCustomerScreen";
+import DeviceDetailScreen from "@/screens/DeviceDetailScreen";
+import NewDeviceScreen from "@/screens/NewDeviceScreen";
+import { useTheme } from "@/hooks/useTheme";
+import { getCommonScreenOptions } from "@/navigation/screenOptions";
+
+export type CustomersStackParamList = {
+  Customers: undefined;
+  CustomerDetail: { customerId: string };
+  NewCustomer: undefined;
+  DeviceDetail: { deviceId: string };
+  NewDevice: { customerId: string };
+};
+
+const Stack = createNativeStackNavigator<CustomersStackParamList>();
+
+export default function CustomersStackNavigator() {
+  const { theme, isDark } = useTheme();
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        ...getCommonScreenOptions({ theme, isDark }),
+      }}
+    >
+      <Stack.Screen
+        name="Customers"
+        component={CustomersScreen}
+        options={{
+          headerTitle: "Klijenti",
+        }}
+      />
+      <Stack.Screen
+        name="CustomerDetail"
+        component={CustomerDetailScreen}
+        options={{
+          headerTitle: "Detalji klijenta",
+          ...getCommonScreenOptions({ theme, isDark, transparent: false }),
+        }}
+      />
+      <Stack.Screen
+        name="NewCustomer"
+        component={NewCustomerScreen}
+        options={{
+          headerTitle: "Novi klijent",
+          presentation: "modal",
+          ...getCommonScreenOptions({ theme, isDark, transparent: false }),
+        }}
+      />
+      <Stack.Screen
+        name="DeviceDetail"
+        component={DeviceDetailScreen}
+        options={{
+          headerTitle: "Detalji uređaja",
+          ...getCommonScreenOptions({ theme, isDark, transparent: false }),
+        }}
+      />
+      <Stack.Screen
+        name="NewDevice"
+        component={NewDeviceScreen}
+        options={{
+          headerTitle: "Novi uređaj",
+          presentation: "modal",
+          ...getCommonScreenOptions({ theme, isDark, transparent: false }),
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
