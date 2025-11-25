@@ -18,6 +18,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "me.tehnikamn.fstservis",
       "buildNumber": "1",
+      "teamId": "520fd133-07de-43cd-8d4c-fb0678dc5295",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Pristup galeriji za slike uređaja",
         "NSCameraUsageDescription": "Kamera za dokumentovanje servisa",
