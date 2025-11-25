@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, ActivityIndicator, View } from "react-native";
 import { NavigationContainer, NavigationContainerRef } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -13,7 +13,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DataProvider } from "@/contexts/DataContext";
 import { useTheme } from "@/hooks/useTheme";
 
-export const navigationRef = useRef<NavigationContainerRef<any>>(null);
+export const navigationRef = React.createRef<NavigationContainerRef<any>>();
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
