@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import { StyleSheet, Pressable, ViewStyle, StyleProp, Platform } from "react-native";
+import React, { ReactNode, useCallback } from "react";
+import { StyleSheet, Pressable, ViewStyle, StyleProp, Platform, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -31,8 +31,6 @@ const springConfig: WithSpringConfig = {
   energyThreshold: 0.001,
 };
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 export function Button({
   onPress,
   children,
@@ -49,17 +47,23 @@ export function Button({
     transform: [{ scale: scale.value }],
   }));
 
-  const handlePressIn = () => {
+  const handlePressIn = useCallback(() => {
     if (!disabled) {
       scale.value = withSpring(0.97, springConfig);
     }
-  };
+  }, [disabled, scale]);
 
-  const handlePressOut = () => {
+  const handlePressOut = useCallback(() => {
     if (!disabled) {
       scale.value = withSpring(1, springConfig);
     }
-  };
+  }, [disabled, scale]);
+
+  const handlePress = useCallback(() => {
+    if (!disabled && onPress) {
+      onPress();
+    }
+  }, [disabled, onPress]);
 
   const getBackgroundColor = () => {
     if (disabled) return theme.backgroundTertiary;
@@ -134,6 +138,12 @@ export function Button({
       };
     }
     
+    if (Platform.OS === 'web') {
+      return {
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.15)',
+      } as ViewStyle;
+    }
+    
     return {
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
@@ -142,38 +152,42 @@ export function Button({
     };
   };
 
+  const buttonStyles: ViewStyle[] = [
+    styles.button,
+    getSizeStyle(),
+    getBorderStyle(),
+    getShadowStyle(),
+    {
+      backgroundColor: getBackgroundColor(),
+      opacity: disabled ? 0.6 : 1,
+      width: fullWidth ? '100%' : undefined,
+    },
+    style as ViewStyle,
+  ].filter(Boolean) as ViewStyle[];
+
   return (
-    <AnimatedPressable
-      onPress={disabled ? undefined : onPress}
+    <Pressable
+      onPress={handlePress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       disabled={disabled}
-      style={[
-        styles.button,
-        getSizeStyle(),
-        getBorderStyle(),
-        getShadowStyle(),
-        {
-          backgroundColor: getBackgroundColor(),
-          opacity: disabled ? 0.6 : 1,
-          width: fullWidth ? '100%' : undefined,
-        },
-        style,
-        animatedStyle,
-      ]}
+      accessibilityRole="button"
+      accessibilityState={{ disabled }}
     >
-      <ThemedText
-        type="body"
-        style={[
-          styles.buttonText,
-          { color: getTextColor() },
-          size === 'large' && styles.largeText,
-          size === 'small' && styles.smallText,
-        ]}
-      >
-        {children}
-      </ThemedText>
-    </AnimatedPressable>
+      <Animated.View style={[buttonStyles, animatedStyle]}>
+        <ThemedText
+          type="body"
+          style={[
+            styles.buttonText,
+            { color: getTextColor() },
+            size === 'large' && styles.largeText,
+            size === 'small' && styles.smallText,
+          ]}
+        >
+          {children}
+        </ThemedText>
+      </Animated.View>
+    </Pressable>
   );
 }
 
