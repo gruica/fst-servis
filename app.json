@@ -40,7 +40,9 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.ACCESS_FINE_LOCATION"
-      ]
+      ],
+      "googlePlayServicesVersion": 33,
+      "enableDangerousExperimentalLeanBuildForAndroid": true
     },
     "web": {
       "output": "single",

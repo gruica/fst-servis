@@ -14,7 +14,7 @@
       },
       "android": {
         "image": "latest",
-        "buildType": "apk"
+        "buildType": "aab"
       }
     },
     "preview": {
@@ -34,7 +34,7 @@
         "requiresSigningCredentials": true
       },
       "android": {
-        "serviceAccount": "google-play-service-account.json"
+        "track": "production"
       }
     }
   }
