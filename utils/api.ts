@@ -2,6 +2,12 @@ import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
 function getApiUrl(): string {
+  // U web modu koristi localhost jer je backend dostupan tamo
+  if (Platform.OS === 'web') {
+    return 'http://localhost:8082';
+  }
+  
+  // U native modu koristi Replit domenu za eksterni pristup
   const replitDevDomain = process.env.EXPO_PUBLIC_REPLIT_DEV_DOMAIN || 
     Constants.expoConfig?.extra?.replitDevDomain;
   
