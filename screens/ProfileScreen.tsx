@@ -22,7 +22,13 @@ export default function ProfileScreen() {
         { 
           text: "Odjavi se", 
           style: "destructive", 
-          onPress: logout 
+          onPress: async () => {
+            try {
+              await logout();
+            } catch (error) {
+              console.log("Logout error:", error);
+            }
+          } 
         },
       ]
     );
