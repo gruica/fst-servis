@@ -19,16 +19,6 @@ function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
   const { theme } = useTheme();
 
-  useEffect(() => {
-    if (!isAuthenticated && navigationRef.current) {
-      console.log("Logout detected - resetting navigation");
-      navigationRef.current.reset({
-        index: 0,
-        routes: [{ name: "Auth" }],
-      });
-    }
-  }, [isAuthenticated]);
-
   if (isLoading) {
     return (
       <View style={[styles.loading, { backgroundColor: theme.backgroundRoot }]}>
