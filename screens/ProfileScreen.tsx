@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Alert, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { ScreenScrollView } from "@/components/ScreenScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { Button } from "@/components/Button";
@@ -12,6 +13,7 @@ import { Spacing, BorderRadius } from "@/constants/theme";
 export default function ProfileScreen() {
   const { theme } = useTheme();
   const { user, logout } = useAuth();
+  const navigation = useNavigation();
 
   const handleLogout = () => {
     Alert.alert(
@@ -24,6 +26,7 @@ export default function ProfileScreen() {
           style: "destructive", 
           onPress: async () => {
             await logout();
+            navigation.reset({ index: 0, routes: [{ name: 'Login' as any }] });
           } 
         },
       ]
