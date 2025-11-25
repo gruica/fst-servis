@@ -91,18 +91,16 @@ export default function MainTabNavigator() {
           ),
         }}
       />
-      {user?.role === 'admin' && (
-        <Tab.Screen
-          name="AdminTab"
-          component={AdminPartnersScreen}
-          options={{
-            title: "Admin",
-            tabBarIcon: ({ color, size }) => (
-              <Feather name="settings" size={size} color={color} />
-            ),
-          }}
-        />
-      )}
+      <Tab.Screen
+        name="AdminTab"
+        component={AdminPartnersScreen}
+        options={{
+          title: user?.role === 'admin' ? "Admin" : "Postavke",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="settings" size={size} color={color} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
