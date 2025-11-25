@@ -51,9 +51,28 @@ Preferred communication style: Jednostavnim, svakodnevnim jezikom.
 3. partner@fst.me / partner123 (Business Partner - ElektroShop D.O.O)
 4. supplier@fst.me / supplier123 (Dobavljač - DelParts)
 
+### Backend Architecture (PRODUCTION)
+
+**Framework**: Node.js sa Express
+- **Database**: Neon PostgreSQL (`postgresql://neondb_owner:...@ep-shiny-paper-a61txol3.us-west-2.aws.neon.tech/neondb`)
+- **API**: REST API sa CORS podrške
+- **Port**: 3000 (production) ili dynamics kroz Replit
+
+**API Endpoints**:
+- `POST /api/auth/login` - Prijava
+- `POST /api/auth/register` - Registracija
+- `GET /api/customers` - Lista klijenata
+- `POST /api/customers` - Kreiranje klijenta
+- `GET /api/customers/:id` - Detalji klijenta
+- `PUT /api/customers/:id` - Ažuriranje klijenta
+- `GET /api/services` - Lista servisa
+- `POST /api/services` - Kreiranje servisa
+- `PUT /api/services/:id` - Ažuriranje servisa
+- `GET /health` - Health check
+
 ### Data Management
 
-**Strategija**: Lokalni-prvo sa AsyncStorage persistencijom
+**Strategija**: Lokalni-prvo sa AsyncStorage persistencijom (frontend) -> Backend API (production)
 - Svi CRUD operacije menadžovani kroz DataContext
 - Uzorak podataka za demonstraciju
 - Optimistički UI updates sa async persistencijom
@@ -112,6 +131,7 @@ Preferred communication style: Jednostavnim, svakodnevnim jezikom.
 - EXPO_PUBLIC_X_CLIENT_ID
 - EXPO_PUBLIC_INSTAGRAM_APP_ID
 - EXPO_PUBLIC_REDIRECT_URL
+- DATABASE_URL (za backend API)
 
 ### Multi-Platform Support
 
@@ -136,6 +156,12 @@ Preferred communication style: Jednostavnim, svakodnevnim jezikom.
 - Custom build skript (`scripts/build.js`) za static hosting
 - QR kod generisanje za Expo Go pristup
 - Landing page template za web deployment
+
+**Production Deployment**:
+- App Store: Trebam Apple Developer credentials
+- Google Play Store: Trebam Google Play Console credentials
+- Backend API: Pokreće se na Replit-u na portu 3000
+- Database: Neon PostgreSQL sa CONNECTION_URL
 
 ## External Dependencies
 
@@ -168,8 +194,15 @@ Preferred communication style: Jednostavnim, svakodnevnim jezikom.
 - **Expo Haptics**: Taktilna povratna informacija
 
 ### Storage & Data
-- **AsyncStorage**: Lokalno key-value skladištenje
+- **AsyncStorage**: Lokalno key-value skladištenje (frontend)
 - **Expo File System**: File menadžment
+- **PostgreSQL (Neon)**: Cloud database
+
+### Backend Dependencies
+- **Express**: Web framework
+- **pg**: PostgreSQL driver
+- **cors**: Cross-origin resource sharing
+- **dotenv**: Environment variable management
 
 ### Development Tools
 - **TypeScript**: Type sigurnost
@@ -178,6 +211,12 @@ Preferred communication style: Jednostavnim, svakodnevnim jezikom.
 - **Babel Module Resolver**: Path aliasing
 
 ## Recent Changes (November 25, 2025)
+
+### Backend API Setup
+- Kreiram Node.js Express backend sa pg (PostgreSQL driver)
+- Konfigurisan DATABASE_URL environment varijabla za Neon DB
+- REST API endpoints za authentication i CRUD operacije
+- Server.js file sa svim potrebnim endpointima
 
 ### Role-Based Access Control
 - Implementirani 4 uloge: admin, technician, business_partner, supplier
@@ -188,13 +227,21 @@ Preferred communication style: Jednostavnim, svakodnevnim jezikom.
 ### Social Login Integration
 - Dodana integracijska za Google, Facebook, GitHub, X, Instagram
 - OAuth utility sa svim logikom
-- LoginScreen sa vizuelnim dugmičima za社交 prijave
+- LoginScreen sa vizuelnim dugmičima za social prijave
 - AuthContext proširenja sa loginWithOAuth metodom
 - Environment variables za OAuth kredencijale
 
 ## Future Integrations
 
-- Backend API (arhitektura spremna)
-- Real-time baza podataka
+- Mobile app API integration sa backend-om
+- Real-time baza podataka za live updates
 - Cloud storage za fotografije
 - Analytics servis
+
+## Deployment
+
+### Production Steps
+1. **Apple App Store**: Trebam Apple Developer naloga + podaci
+2. **Google Play Store**: Trebam Google Play Console naloga
+3. **Backend**: Express API pokrenut na Replit-u
+4. **Database**: Neon PostgreSQL konekcija aktivna
