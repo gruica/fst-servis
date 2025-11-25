@@ -151,6 +151,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const deleteCustomer = async (id: string) => {
+    await customersApi.delete(id);
     await storage.deleteCustomer(id);
     setCustomers(prev => prev.filter(c => c.id !== id));
   };
@@ -173,14 +174,22 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const addService = async (data: Omit<Service, 'id' | 'createdAt' | 'updatedAt'>): Promise<Service> => {
-    const now = new Date().toISOString().split('T')[0];
-    const service: Service = {
-      ...data,
-      id: generateId(),
-      createdAt: now,
-      updatedAt: now,
-    };
-    await storage.addService(service);
+    const apiRes = await servicesApi.create(data);
+    let service: Service;
+    
+    if (apiRes.success && apiRes.data) {
+      service = apiRes.data as Service;
+    } else {
+      const now = new Date().toISOString().split('T')[0];
+      service = {
+        ...data,
+        id: generateId(),
+        createdAt: now,
+        updatedAt: now,
+      };
+      await storage.addService(service);
+    }
+    
     setServices(prev => [...prev, service]);
     
     const customer = customers.find(c => c.id === data.customerId);
@@ -203,6 +212,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const updateService = async (service: Service) => {
     const existingService = services.find(s => s.id === service.id);
     const updated = { ...service, updatedAt: new Date().toISOString().split('T')[0] };
+    await servicesApi.update(updated.id, updated);
     await storage.updateService(updated);
     setServices(prev => prev.map(s => s.id === updated.id ? updated : s));
     
@@ -223,6 +233,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const deleteService = async (id: string) => {
+    await servicesApi.delete(id);
     await storage.deleteService(id);
     setServices(prev => prev.filter(s => s.id !== id));
   };
