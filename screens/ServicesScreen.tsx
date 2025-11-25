@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from "react";
-import { View, StyleSheet, TextInput, Pressable, RefreshControl } from "react-native";
+import React, { useState, useMemo, useEffect, useRef } from "react";
+import { View, StyleSheet, TextInput, Pressable, RefreshControl, Platform } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ScreenFlatList } from "@/components/ScreenFlatList";
@@ -14,6 +14,7 @@ import { useData } from "@/contexts/DataContext";
 import { ServicesStackParamList } from "@/navigation/ServicesStackNavigator";
 import { Service, ServiceStatus } from "@/types";
 import { Spacing, BorderRadius } from "@/constants/theme";
+import { registerForPushNotifications } from "@/utils/notifications";
 
 type Props = {
   navigation: NativeStackNavigationProp<ServicesStackParamList, "Services">;
@@ -25,6 +26,14 @@ export default function ServicesScreen({ navigation }: Props) {
   const { services, customers, devices, isLoading, refreshData } = useData();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<ServiceStatus | "all">("all");
+  const notificationInitialized = useRef(false);
+
+  useEffect(() => {
+    if (!isLoading && !notificationInitialized.current && Platform.OS !== "web") {
+      notificationInitialized.current = true;
+      registerForPushNotifications().catch(console.log);
+    }
+  }, [isLoading]);
 
   const filteredServices = useMemo(() => {
     let servicesList = services;
