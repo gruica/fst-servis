@@ -4,15 +4,19 @@ import { Platform } from "react-native";
 import { ServiceStatus, STATUS_LABELS } from "@/types";
 
 if (Platform.OS !== "web") {
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: true,
-      shouldShowBanner: true,
-      shouldShowList: true,
-    }),
-  });
+  try {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
+    });
+  } catch (error) {
+    console.log("Notifications not available in this environment", error);
+  }
 }
 
 export async function registerForPushNotifications(): Promise<string | null> {
@@ -23,39 +27,47 @@ export async function registerForPushNotifications(): Promise<string | null> {
 
   let token: string | null = null;
 
-  if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync("default", {
-      name: "FST Servis",
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#2563EB",
-    });
-  }
-
-  if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    
-    if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    
-    if (finalStatus !== "granted") {
-      console.log("Push notification permission not granted");
-      return null;
+  try {
+    if (Platform.OS === "android") {
+      try {
+        await Notifications.setNotificationChannelAsync("default", {
+          name: "FST Servis",
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: "#2563EB",
+        });
+      } catch (channelError) {
+        console.log("Notification channel setup not available:", channelError);
+      }
     }
 
-    try {
-      const tokenResponse = await Notifications.getExpoPushTokenAsync({
-        projectId: "fst-servis",
-      });
-      token = tokenResponse.data;
-    } catch (error) {
-      console.log("Error getting push token:", error);
+    if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      
+      if (finalStatus !== "granted") {
+        console.log("Push notification permission not granted");
+        return null;
+      }
+
+      try {
+        const tokenResponse = await Notifications.getExpoPushTokenAsync({
+          projectId: "fst-servis",
+        });
+        token = tokenResponse.data;
+      } catch (error) {
+        console.log("Error getting push token:", error);
+      }
+    } else {
+      console.log("Push notifications require a physical device");
     }
-  } else {
-    console.log("Push notifications require a physical device");
+  } catch (error) {
+    console.log("Push notifications not available:", error);
   }
 
   return token;
@@ -71,17 +83,22 @@ export async function sendLocalNotification(
     return "web-notification-" + Date.now();
   }
 
-  const id = await Notifications.scheduleNotificationAsync({
-    content: {
-      title,
-      body,
-      data,
-      sound: true,
-      priority: Notifications.AndroidNotificationPriority.HIGH,
-    },
-    trigger: null,
-  });
-  return id;
+  try {
+    const id = await Notifications.scheduleNotificationAsync({
+      content: {
+        title,
+        body,
+        data,
+        sound: true,
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+      },
+      trigger: null,
+    });
+    return id;
+  } catch (error) {
+    console.log("Notification not sent (not available in this environment):", error);
+    return "notification-unavailable-" + Date.now();
+  }
 }
 
 export async function sendServiceStatusNotification(
@@ -141,24 +158,47 @@ export async function sendScheduledMaintenanceNotification(
 
 export function addNotificationReceivedListener(
   callback: (notification: Notifications.Notification) => void
-): Notifications.EventSubscription {
-  return Notifications.addNotificationReceivedListener(callback);
+): Notifications.EventSubscription | null {
+  try {
+    return Notifications.addNotificationReceivedListener(callback);
+  } catch (error) {
+    console.log("Notification listener not available:", error);
+    return null;
+  }
 }
 
 export function addNotificationResponseReceivedListener(
   callback: (response: Notifications.NotificationResponse) => void
-): Notifications.EventSubscription {
-  return Notifications.addNotificationResponseReceivedListener(callback);
+): Notifications.EventSubscription | null {
+  try {
+    return Notifications.addNotificationResponseReceivedListener(callback);
+  } catch (error) {
+    console.log("Notification response listener not available:", error);
+    return null;
+  }
 }
 
 export async function cancelAllNotifications(): Promise<void> {
-  await Notifications.cancelAllScheduledNotificationsAsync();
+  try {
+    await Notifications.cancelAllScheduledNotificationsAsync();
+  } catch (error) {
+    console.log("Cancel notifications not available:", error);
+  }
 }
 
 export async function getBadgeCount(): Promise<number> {
-  return await Notifications.getBadgeCountAsync();
+  try {
+    return await Notifications.getBadgeCountAsync();
+  } catch (error) {
+    console.log("Badge count not available:", error);
+    return 0;
+  }
 }
 
 export async function setBadgeCount(count: number): Promise<void> {
-  await Notifications.setBadgeCountAsync(count);
+  try {
+    await Notifications.setBadgeCountAsync(count);
+  } catch (error) {
+    console.log("Set badge count not available:", error);
+  }
 }
