@@ -136,8 +136,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'FST Servis API is running' });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 8082;
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`FST Servis Backend API running on port ${PORT}`);
   console.log(`Database connected: ${process.env.DATABASE_URL.split('@')[1] || 'Neon'}`);
 });

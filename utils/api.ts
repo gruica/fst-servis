@@ -1,4 +1,24 @@
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+import { Platform } from 'react-native';
+import Constants from 'expo-constants';
+
+function getApiUrl(): string {
+  const replitDevDomain = process.env.EXPO_PUBLIC_REPLIT_DEV_DOMAIN || 
+    Constants.expoConfig?.extra?.replitDevDomain;
+  
+  if (Platform.OS === 'web') {
+    return process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8082';
+  }
+  
+  if (replitDevDomain) {
+    return `https://3000-${replitDevDomain}`;
+  }
+  
+  return process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8082';
+}
+
+const API_URL = getApiUrl();
+
+console.log('[API] Using API URL:', API_URL);
 
 interface ApiResponse<T> {
   success: boolean;
@@ -11,6 +31,7 @@ async function request<T>(
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
   try {
+    console.log('[API] Request:', API_URL + endpoint);
     const response = await fetch(`${API_URL}${endpoint}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -25,6 +46,7 @@ async function request<T>(
 
     return await response.json();
   } catch (error) {
+    console.log('[API] Error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -89,6 +111,28 @@ export const servicesApi = {
 
   delete: (id: string) =>
     request(`/api/services/${id}`, { method: 'DELETE' }),
+};
+
+// DEVICES
+export const devicesApi = {
+  list: () => request('/api/devices'),
+
+  get: (id: string) => request(`/api/devices/${id}`),
+
+  create: (data: any) =>
+    request('/api/devices', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+  update: (id: string, data: any) =>
+    request(`/api/devices/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+  delete: (id: string) =>
+    request(`/api/devices/${id}`, { method: 'DELETE' }),
 };
 
 // HEALTH
