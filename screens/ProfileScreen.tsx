@@ -19,7 +19,13 @@ export default function ProfileScreen() {
       "Da li ste sigurni da želite da se odjavite?",
       [
         { text: "Odustani", style: "cancel" },
-        { text: "Odjavi se", style: "destructive", onPress: logout },
+        { 
+          text: "Odjavi se", 
+          style: "destructive", 
+          onPress: async () => {
+            await logout();
+          } 
+        },
       ]
     );
   };
