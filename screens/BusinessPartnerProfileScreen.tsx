@@ -3,7 +3,6 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { Card } from '@/components/Card';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/contexts/AuthContext';
 import { BUSINESS_PARTNER_CAPABILITIES, BUSINESS_PARTNER_RESTRICTIONS } from '@/utils/permissions';
@@ -27,17 +26,17 @@ export default function BusinessPartnerProfileScreen() {
       style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom + Spacing.xl }]}
       contentContainerStyle={styles.content}
     >
-      <Card style={[styles.headerCard, { backgroundColor: theme.primary }]}>
+      <ThemedView style={[styles.headerCard, { backgroundColor: theme.primary }]}>
         <ThemedText type="h2" style={styles.headerTitle}>{user.companyName || user.name}</ThemedText>
         <ThemedText style={[styles.headerSubtitle, { color: theme.textSecondary }]}>
           Poslovni Partner
         </ThemedText>
-      </Card>
+      </ThemedView>
 
       <View style={styles.section}>
         <ThemedText type="h3" style={styles.sectionTitle}>Vaše Mogućnosti</ThemedText>
         {Object.entries(BUSINESS_PARTNER_CAPABILITIES).map(([key, capability]) => (
-          <Card key={key} style={[styles.capabilityCard, { backgroundColor: theme.backgroundDefault }]}>
+          <ThemedView key={key} style={[styles.capabilityCard, { backgroundColor: theme.backgroundDefault }]}>
             <ThemedText type="h4" style={styles.capabilityTitle}>{capability.title}</ThemedText>
             {capability.features.map((feature, idx) => (
               <View key={idx} style={styles.featureRow}>
@@ -45,25 +44,25 @@ export default function BusinessPartnerProfileScreen() {
                 <ThemedText style={styles.featureText}>{feature}</ThemedText>
               </View>
             ))}
-          </Card>
+          </ThemedView>
         ))}
       </View>
 
       <View style={styles.section}>
         <ThemedText type="h3" style={[styles.sectionTitle, { color: '#F87171' }]}>Ograničenja</ThemedText>
-        <Card style={[styles.restrictionCard, { backgroundColor: theme.backgroundDefault, borderColor: '#FECACA', borderWidth: 1 }]}>
+        <ThemedView style={[styles.restrictionCard, { backgroundColor: theme.backgroundDefault, borderColor: '#FECACA', borderWidth: 1 }]}>
           {BUSINESS_PARTNER_RESTRICTIONS.map((restriction, idx) => (
             <View key={idx} style={styles.featureRow}>
               <ThemedText style={[styles.featureBullet, { color: '#F87171' }]}>✕ </ThemedText>
               <ThemedText style={styles.featureText}>{restriction}</ThemedText>
             </View>
           ))}
-        </Card>
+        </ThemedView>
       </View>
 
       <View style={styles.section}>
         <ThemedText type="h3" style={styles.sectionTitle}>Informacije o Nalogu</ThemedText>
-        <Card style={[styles.infoCard, { backgroundColor: theme.backgroundDefault }]}>
+        <ThemedView style={[styles.infoCard, { backgroundColor: theme.backgroundDefault }]}>
           <View style={styles.infoRow}>
             <ThemedText style={[styles.infoLabel, { color: theme.textSecondary }]}>Ime:</ThemedText>
             <ThemedText style={styles.infoValue}>{user.name}</ThemedText>
@@ -84,7 +83,7 @@ export default function BusinessPartnerProfileScreen() {
               <ThemedText style={styles.infoValue}>{user.companyName}</ThemedText>
             </View>
           )}
-        </Card>
+        </ThemedView>
       </View>
     </ScrollView>
   );
@@ -100,6 +99,7 @@ const styles = StyleSheet.create({
   headerCard: {
     marginBottom: Spacing.lg,
     padding: Spacing.lg,
+    borderRadius: 12,
   },
   headerTitle: {
     color: '#fff',
@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
   capabilityCard: {
     marginBottom: Spacing.md,
     padding: Spacing.md,
+    borderRadius: 12,
   },
   capabilityTitle: {
     marginBottom: Spacing.sm,
@@ -138,9 +139,11 @@ const styles = StyleSheet.create({
   },
   restrictionCard: {
     padding: Spacing.md,
+    borderRadius: 12,
   },
   infoCard: {
     padding: Spacing.md,
+    borderRadius: 12,
   },
   infoRow: {
     flexDirection: 'row',

@@ -7,19 +7,23 @@ import ServicesStackNavigator from "@/navigation/ServicesStackNavigator";
 import CustomersStackNavigator from "@/navigation/CustomersStackNavigator";
 import ScheduleStackNavigator from "@/navigation/ScheduleStackNavigator";
 import ReportsStackNavigator from "@/navigation/ReportsStackNavigator";
+import AdminPartnersScreen from "@/screens/AdminPartnersScreen";
 import { useTheme } from "@/hooks/useTheme";
+import { useAuth } from "@/contexts/AuthContext";
 
 export type MainTabParamList = {
   ServicesTab: undefined;
   CustomersTab: undefined;
   ScheduleTab: undefined;
   ReportsTab: undefined;
+  AdminTab: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export default function MainTabNavigator() {
   const { theme, isDark } = useTheme();
+  const { user } = useAuth();
 
   return (
     <Tab.Navigator
@@ -87,6 +91,18 @@ export default function MainTabNavigator() {
           ),
         }}
       />
+      {user?.role === 'admin' && (
+        <Tab.Screen
+          name="AdminTab"
+          component={AdminPartnersScreen}
+          options={{
+            title: "Admin",
+            tabBarIcon: ({ color, size }) => (
+              <Feather name="settings" size={size} color={color} />
+            ),
+          }}
+        />
+      )}
     </Tab.Navigator>
   );
 }

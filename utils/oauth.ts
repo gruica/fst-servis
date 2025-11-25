@@ -12,68 +12,12 @@ let redirectUri = '';
 try {
   redirectUri = AuthSession.makeRedirectUri({
     native: 'fstservis://oauth-callback',
-    web: `${process.env.EXPO_PUBLIC_REDIRECT_URL || 'http://localhost:8081'}/oauth-callback`,
-  });
+  }) || `${process.env.EXPO_PUBLIC_REDIRECT_URL || 'http://localhost:8081'}/oauth-callback`;
 } catch (e) {
   redirectUri = `${process.env.EXPO_PUBLIC_REDIRECT_URL || 'http://localhost:8081'}/oauth-callback`;
 }
 
-// Google OAuth
-const googleConfig = {
-  clientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID || '',
-  redirectUri,
-  scopes: ['openid', 'profile', 'email'],
-  discovery: {
-    authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
-    tokenEndpoint: 'https://oauth2.googleapis.com/token',
-  },
-};
-
-// Facebook OAuth
-const facebookConfig = {
-  clientId: process.env.EXPO_PUBLIC_FACEBOOK_APP_ID || '',
-  redirectUri,
-  scopes: ['public_profile', 'email'],
-  discovery: {
-    authorizationEndpoint: 'https://www.facebook.com/v18.0/dialog/oauth',
-    tokenEndpoint: 'https://graph.facebook.com/v18.0/oauth/access_token',
-  },
-};
-
-// GitHub OAuth
-const githubConfig = {
-  clientId: process.env.EXPO_PUBLIC_GITHUB_CLIENT_ID || '',
-  redirectUri,
-  scopes: ['user:email'],
-  discovery: {
-    authorizationEndpoint: 'https://github.com/login/oauth/authorize',
-    tokenEndpoint: 'https://github.com/login/oauth/access_token',
-  },
-};
-
-// X (Twitter) OAuth
-const xConfig = {
-  clientId: process.env.EXPO_PUBLIC_X_CLIENT_ID || '',
-  redirectUri,
-  scopes: ['tweet.read', 'users.read'],
-  discovery: {
-    authorizationEndpoint: 'https://twitter.com/i/oauth2/authorize',
-    tokenEndpoint: 'https://twitter.com/2/oauth2/token',
-  },
-};
-
-// Instagram OAuth
-const instagramConfig = {
-  clientId: process.env.EXPO_PUBLIC_INSTAGRAM_APP_ID || '',
-  redirectUri,
-  scopes: ['user_profile', 'user_media'],
-  discovery: {
-    authorizationEndpoint: 'https://api.instagram.com/oauth/authorize',
-    tokenEndpoint: 'https://graph.instagram.com/v18.0/access_token',
-  },
-};
-
-// Demo fallback users for OAuth (when real OAuth fails)
+// Demo fallback users for OAuth
 const demoOAuthUsers: { [key: string]: User } = {
   google: {
     id: 'google_demo_001',
@@ -114,18 +58,21 @@ const demoOAuthUsers: { [key: string]: User } = {
 
 export async function loginWithGoogle(): Promise<User | null> {
   try {
-    if (!googleConfig.clientId) {
+    if (!process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID) {
       return demoOAuthUsers.google;
     }
 
     const request = new AuthSession.AuthRequest({
-      clientId: googleConfig.clientId,
-      redirectUri: googleConfig.redirectUri,
-      scopes: googleConfig.scopes,
-      discovery: googleConfig.discovery,
+      clientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
+      redirectUri,
+      scopes: ['openid', 'profile', 'email'],
     });
 
-    const result = await request.promptAsync(googleConfig.discovery);
+    const authorizationEndpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+    const result = await request.promptAsync({
+      authorizationEndpoint,
+      tokenEndpoint: 'https://oauth2.googleapis.com/token',
+    });
 
     if (result.type === 'success' && result.authentication) {
       const userInfo = await fetchGoogleUserInfo(result.authentication.accessToken);
@@ -146,18 +93,21 @@ export async function loginWithGoogle(): Promise<User | null> {
 
 export async function loginWithFacebook(): Promise<User | null> {
   try {
-    if (!facebookConfig.clientId) {
+    if (!process.env.EXPO_PUBLIC_FACEBOOK_APP_ID) {
       return demoOAuthUsers.facebook;
     }
 
     const request = new AuthSession.AuthRequest({
-      clientId: facebookConfig.clientId,
-      redirectUri: facebookConfig.redirectUri,
-      scopes: facebookConfig.scopes,
-      discovery: facebookConfig.discovery,
+      clientId: process.env.EXPO_PUBLIC_FACEBOOK_APP_ID,
+      redirectUri,
+      scopes: ['public_profile', 'email'],
     });
 
-    const result = await request.promptAsync(facebookConfig.discovery);
+    const authorizationEndpoint = 'https://www.facebook.com/v18.0/dialog/oauth';
+    const result = await request.promptAsync({
+      authorizationEndpoint,
+      tokenEndpoint: 'https://graph.facebook.com/v18.0/oauth/access_token',
+    });
 
     if (result.type === 'success' && result.authentication) {
       const userInfo = await fetchFacebookUserInfo(result.authentication.accessToken);
@@ -178,18 +128,21 @@ export async function loginWithFacebook(): Promise<User | null> {
 
 export async function loginWithGithub(): Promise<User | null> {
   try {
-    if (!githubConfig.clientId) {
+    if (!process.env.EXPO_PUBLIC_GITHUB_CLIENT_ID) {
       return demoOAuthUsers.github;
     }
 
     const request = new AuthSession.AuthRequest({
-      clientId: githubConfig.clientId,
-      redirectUri: githubConfig.redirectUri,
-      scopes: githubConfig.scopes,
-      discovery: githubConfig.discovery,
+      clientId: process.env.EXPO_PUBLIC_GITHUB_CLIENT_ID,
+      redirectUri,
+      scopes: ['user:email'],
     });
 
-    const result = await request.promptAsync(githubConfig.discovery);
+    const authorizationEndpoint = 'https://github.com/login/oauth/authorize';
+    const result = await request.promptAsync({
+      authorizationEndpoint,
+      tokenEndpoint: 'https://github.com/login/oauth/access_token',
+    });
 
     if (result.type === 'success' && result.authentication) {
       const userInfo = await fetchGithubUserInfo(result.authentication.accessToken);
@@ -210,18 +163,21 @@ export async function loginWithGithub(): Promise<User | null> {
 
 export async function loginWithX(): Promise<User | null> {
   try {
-    if (!xConfig.clientId) {
+    if (!process.env.EXPO_PUBLIC_X_CLIENT_ID) {
       return demoOAuthUsers.x;
     }
 
     const request = new AuthSession.AuthRequest({
-      clientId: xConfig.clientId,
-      redirectUri: xConfig.redirectUri,
-      scopes: xConfig.scopes,
-      discovery: xConfig.discovery,
+      clientId: process.env.EXPO_PUBLIC_X_CLIENT_ID,
+      redirectUri,
+      scopes: ['tweet.read', 'users.read'],
     });
 
-    const result = await request.promptAsync(xConfig.discovery);
+    const authorizationEndpoint = 'https://twitter.com/i/oauth2/authorize';
+    const result = await request.promptAsync({
+      authorizationEndpoint,
+      tokenEndpoint: 'https://twitter.com/2/oauth2/token',
+    });
 
     if (result.type === 'success' && result.authentication) {
       const userInfo = await fetchXUserInfo(result.authentication.accessToken);
@@ -242,18 +198,21 @@ export async function loginWithX(): Promise<User | null> {
 
 export async function loginWithInstagram(): Promise<User | null> {
   try {
-    if (!instagramConfig.clientId) {
+    if (!process.env.EXPO_PUBLIC_INSTAGRAM_APP_ID) {
       return demoOAuthUsers.instagram;
     }
 
     const request = new AuthSession.AuthRequest({
-      clientId: instagramConfig.clientId,
-      redirectUri: instagramConfig.redirectUri,
-      scopes: instagramConfig.scopes,
-      discovery: instagramConfig.discovery,
+      clientId: process.env.EXPO_PUBLIC_INSTAGRAM_APP_ID,
+      redirectUri,
+      scopes: ['user_profile', 'user_media'],
     });
 
-    const result = await request.promptAsync(instagramConfig.discovery);
+    const authorizationEndpoint = 'https://api.instagram.com/oauth/authorize';
+    const result = await request.promptAsync({
+      authorizationEndpoint,
+      tokenEndpoint: 'https://graph.instagram.com/v18.0/access_token',
+    });
 
     if (result.type === 'success' && result.authentication) {
       const userInfo = await fetchInstagramUserInfo(result.authentication.accessToken);
