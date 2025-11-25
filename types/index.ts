@@ -6,10 +6,11 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'admin' | 'technician';
+  role: 'admin' | 'technician' | 'business_partner' | 'supplier';
   phone?: string;
   avatar?: string;
   specialties?: DeviceType[];
+  companyName?: string;
 }
 
 export interface Customer {
@@ -20,6 +21,7 @@ export interface Customer {
   address: string;
   notes?: string;
   createdAt: string;
+  createdByUserId?: string;
 }
 
 export interface Device {
@@ -39,6 +41,7 @@ export interface Service {
   customerId: string;
   deviceId: string;
   technicianId?: string;
+  createdByUserId?: string;
   status: ServiceStatus;
   priority: Priority;
   description: string;

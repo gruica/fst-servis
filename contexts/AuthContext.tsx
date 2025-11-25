@@ -36,6 +36,30 @@ const DEMO_USERS: { email: string; password: string; user: User }[] = [
       specialties: ['washing_machine', 'dishwasher', 'dryer'],
     },
   },
+  {
+    email: 'partner@fst.me',
+    password: 'partner123',
+    user: {
+      id: '3',
+      email: 'partner@fst.me',
+      name: 'Aleksandar Nikolić',
+      role: 'business_partner',
+      phone: '+382 69 999 111',
+      companyName: 'ElektroShop D.O.O',
+    },
+  },
+  {
+    email: 'supplier@fst.me',
+    password: 'supplier123',
+    user: {
+      id: '4',
+      email: 'supplier@fst.me',
+      name: 'Dragana Ilić',
+      role: 'supplier',
+      phone: '+382 65 222 333',
+      companyName: 'DelParts - Rezervni Dijelovi',
+    },
+  },
 ];
 
 export function AuthProvider({ children }: { children: ReactNode }) {

@@ -9,6 +9,7 @@ import { StatusFilter } from "@/components/StatusFilter";
 import { EmptyState } from "@/components/EmptyState";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
+import { useAuth } from "@/contexts/AuthContext";
 import { useData } from "@/contexts/DataContext";
 import { ServicesStackParamList } from "@/navigation/ServicesStackNavigator";
 import { Service, ServiceStatus } from "@/types";
@@ -20,12 +21,20 @@ type Props = {
 
 export default function ServicesScreen({ navigation }: Props) {
   const { theme } = useTheme();
+  const { user } = useAuth();
   const { services, customers, devices, isLoading, refreshData } = useData();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<ServiceStatus | "all">("all");
 
   const filteredServices = useMemo(() => {
-    return services
+    let servicesList = services;
+    
+    // Poslovni partneri vide samo svoje servise
+    if (user?.role === 'business_partner') {
+      servicesList = servicesList.filter(s => s.createdByUserId === user.id);
+    }
+    
+    return servicesList
       .filter(service => {
         if (statusFilter !== "all" && service.status !== statusFilter) return false;
         if (searchQuery) {
@@ -42,7 +51,7 @@ export default function ServicesScreen({ navigation }: Props) {
         return true;
       })
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }, [services, customers, devices, searchQuery, statusFilter]);
+  }, [services, customers, devices, searchQuery, statusFilter, user]);
 
   const handleServicePress = (service: Service) => {
     navigation.navigate("ServiceDetail", { serviceId: service.id });
