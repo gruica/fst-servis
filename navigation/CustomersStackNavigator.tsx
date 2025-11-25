@@ -5,15 +5,23 @@ import CustomerDetailScreen from "@/screens/CustomerDetailScreen";
 import NewCustomerScreen from "@/screens/NewCustomerScreen";
 import DeviceDetailScreen from "@/screens/DeviceDetailScreen";
 import NewDeviceScreen from "@/screens/NewDeviceScreen";
+import QRScannerScreen from "@/screens/QRScannerScreen";
 import { useTheme } from "@/hooks/useTheme";
 import { getCommonScreenOptions } from "@/navigation/screenOptions";
+
+export type ScannedDeviceData = {
+  brand?: string;
+  model?: string;
+  serialNumber?: string;
+};
 
 export type CustomersStackParamList = {
   Customers: undefined;
   CustomerDetail: { customerId: string };
   NewCustomer: undefined;
   DeviceDetail: { deviceId: string };
-  NewDevice: { customerId: string };
+  NewDevice: { customerId: string; scannedData?: ScannedDeviceData };
+  QRScanner: { customerId: string };
 };
 
 const Stack = createNativeStackNavigator<CustomersStackParamList>();
@@ -66,6 +74,15 @@ export default function CustomersStackNavigator() {
           headerTitle: "Novi uređaj",
           presentation: "modal",
           ...getCommonScreenOptions({ theme, isDark, transparent: false }),
+        }}
+      />
+      <Stack.Screen
+        name="QRScanner"
+        component={QRScannerScreen}
+        options={{
+          headerShown: false,
+          presentation: "fullScreenModal",
+          animation: "slide_from_bottom",
         }}
       />
     </Stack.Navigator>

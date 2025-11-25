@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet, Alert, Pressable } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Alert, Pressable, TextInput } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
@@ -8,11 +8,13 @@ import { ThemedText } from "@/components/ThemedText";
 import { StatusBadge } from "@/components/StatusBadge";
 import { PriorityBadge } from "@/components/PriorityBadge";
 import { Button } from "@/components/Button";
+import { PhotoGallery } from "@/components/PhotoGallery";
 import { useTheme } from "@/hooks/useTheme";
 import { useData } from "@/contexts/DataContext";
 import { ServicesStackParamList } from "@/navigation/ServicesStackNavigator";
 import { DEVICE_TYPE_LABELS, ServiceStatus } from "@/types";
 import { Spacing, BorderRadius } from "@/constants/theme";
+import { sendServiceStatusEmail, checkEmailAvailability } from "@/utils/email";
 
 type Props = {
   navigation: NativeStackNavigationProp<ServicesStackParamList, "ServiceDetail">;
@@ -27,6 +29,18 @@ export default function ServiceDetailScreen({ navigation, route }: Props) {
   const service = services.find(s => s.id === serviceId);
   const customer = service ? customers.find(c => c.id === service.customerId) : null;
   const device = service ? devices.find(d => d.id === service.deviceId) : null;
+
+  const [isEditingDiagnosis, setIsEditingDiagnosis] = useState(false);
+  const [diagnosis, setDiagnosis] = useState(service?.diagnosis || "");
+  const [isEditingSolution, setIsEditingSolution] = useState(false);
+  const [solution, setSolution] = useState(service?.solution || "");
+  const [isEditingCost, setIsEditingCost] = useState(false);
+  const [cost, setCost] = useState(service?.cost?.toString() || "");
+  const [canSendEmail, setCanSendEmail] = useState(false);
+
+  useEffect(() => {
+    checkEmailAvailability().then(setCanSendEmail).catch(() => setCanSendEmail(false));
+  }, []);
 
   if (!service) {
     return (
@@ -55,6 +69,74 @@ export default function ServiceDetailScreen({ navigation, route }: Props) {
       ]
     );
   };
+
+  const handlePhotosChange = async (photos: string[]) => {
+    await updateService({
+      ...service,
+      photos,
+    });
+  };
+
+  const handleSaveDiagnosis = async () => {
+    await updateService({
+      ...service,
+      diagnosis: diagnosis.trim(),
+    });
+    setIsEditingDiagnosis(false);
+  };
+
+  const handleSaveSolution = async () => {
+    await updateService({
+      ...service,
+      solution: solution.trim(),
+    });
+    setIsEditingSolution(false);
+  };
+
+  const handleSaveCost = async () => {
+    const costValue = parseFloat(cost);
+    await updateService({
+      ...service,
+      cost: isNaN(costValue) ? undefined : costValue,
+    });
+    setIsEditingCost(false);
+  };
+
+  const handleSendEmail = async () => {
+    if (!customer || !device) {
+      Alert.alert("Greška", "Podaci o klijentu ili uređaju nisu dostupni");
+      return;
+    }
+
+    if (!customer.email) {
+      Alert.alert(
+        "Email nije dostupan",
+        "Klijent nema upisanu email adresu. Da li želite da ručno unesete adresu?",
+        [
+          { text: "Odustani", style: "cancel" },
+          {
+            text: "Nastavi",
+            onPress: async () => {
+              try {
+                await sendServiceStatusEmail(customer, device, service);
+              } catch (error) {
+                Alert.alert("Greška", "Nije moguće otvoriti email aplikaciju");
+              }
+            },
+          },
+        ]
+      );
+      return;
+    }
+
+    try {
+      await sendServiceStatusEmail(customer, device, service);
+    } catch (error) {
+      Alert.alert("Greška", "Nije moguće otvoriti email aplikaciju");
+    }
+  };
+
+  const isEditable = service.status !== "completed" && service.status !== "cancelled";
 
   return (
     <ScreenScrollView>
@@ -117,34 +199,174 @@ export default function ServiceDetailScreen({ navigation, route }: Props) {
         <ThemedText type="body">{service.description}</ThemedText>
       </View>
 
-      {service.diagnosis ? (
-        <View style={[styles.card, { backgroundColor: theme.backgroundDefault }]}>
-          <View style={styles.cardHeader}>
-            <Feather name="search" size={20} color={theme.primary} />
-            <ThemedText type="h4">Dijagnoza</ThemedText>
-          </View>
-          <ThemedText type="body">{service.diagnosis}</ThemedText>
-        </View>
-      ) : null}
+      <View style={[styles.card, { backgroundColor: theme.backgroundDefault }]}>
+        <PhotoGallery
+          photos={service.photos || []}
+          onPhotosChange={handlePhotosChange}
+          editable={isEditable}
+          maxPhotos={10}
+        />
+      </View>
 
-      {service.solution ? (
-        <View style={[styles.card, { backgroundColor: theme.backgroundDefault }]}>
-          <View style={styles.cardHeader}>
-            <Feather name="check-circle" size={20} color={theme.success} />
-            <ThemedText type="h4">Rešenje</ThemedText>
-          </View>
-          <ThemedText type="body">{service.solution}</ThemedText>
+      <View style={[styles.card, { backgroundColor: theme.backgroundDefault }]}>
+        <View style={styles.cardHeader}>
+          <Feather name="search" size={20} color={theme.primary} />
+          <ThemedText type="h4">Dijagnoza</ThemedText>
+          {isEditable && !isEditingDiagnosis ? (
+            <Pressable
+              style={styles.editButton}
+              onPress={() => {
+                setDiagnosis(service.diagnosis || "");
+                setIsEditingDiagnosis(true);
+              }}
+            >
+              <Feather name="edit-2" size={16} color={theme.primary} />
+            </Pressable>
+          ) : null}
         </View>
-      ) : null}
+        {isEditingDiagnosis ? (
+          <View>
+            <TextInput
+              style={[styles.textArea, { backgroundColor: theme.backgroundRoot, color: theme.text, borderColor: theme.border }]}
+              value={diagnosis}
+              onChangeText={setDiagnosis}
+              placeholder="Unesite dijagnozu..."
+              placeholderTextColor={theme.textSecondary}
+              multiline
+              numberOfLines={3}
+            />
+            <View style={styles.editActions}>
+              <Pressable
+                style={[styles.saveButton, { backgroundColor: theme.primary }]}
+                onPress={handleSaveDiagnosis}
+              >
+                <ThemedText type="small" style={styles.saveButtonText}>Sačuvaj</ThemedText>
+              </Pressable>
+              <Pressable
+                style={styles.cancelEditButton}
+                onPress={() => setIsEditingDiagnosis(false)}
+              >
+                <ThemedText type="small" style={{ color: theme.textSecondary }}>Odustani</ThemedText>
+              </Pressable>
+            </View>
+          </View>
+        ) : (
+          <ThemedText type="body" style={!service.diagnosis ? { color: theme.textSecondary, fontStyle: "italic" } : undefined}>
+            {service.diagnosis || "Nije uneta dijagnoza"}
+          </ThemedText>
+        )}
+      </View>
 
-      {service.cost ? (
-        <View style={[styles.card, { backgroundColor: theme.backgroundDefault }]}>
-          <View style={styles.cardHeader}>
-            <Feather name="dollar-sign" size={20} color={theme.primary} />
-            <ThemedText type="h4">Cena</ThemedText>
-          </View>
-          <ThemedText type="h3">{service.cost} EUR</ThemedText>
+      <View style={[styles.card, { backgroundColor: theme.backgroundDefault }]}>
+        <View style={styles.cardHeader}>
+          <Feather name="check-circle" size={20} color={theme.success} />
+          <ThemedText type="h4">Rešenje</ThemedText>
+          {isEditable && !isEditingSolution ? (
+            <Pressable
+              style={styles.editButton}
+              onPress={() => {
+                setSolution(service.solution || "");
+                setIsEditingSolution(true);
+              }}
+            >
+              <Feather name="edit-2" size={16} color={theme.primary} />
+            </Pressable>
+          ) : null}
         </View>
+        {isEditingSolution ? (
+          <View>
+            <TextInput
+              style={[styles.textArea, { backgroundColor: theme.backgroundRoot, color: theme.text, borderColor: theme.border }]}
+              value={solution}
+              onChangeText={setSolution}
+              placeholder="Unesite rešenje..."
+              placeholderTextColor={theme.textSecondary}
+              multiline
+              numberOfLines={3}
+            />
+            <View style={styles.editActions}>
+              <Pressable
+                style={[styles.saveButton, { backgroundColor: theme.primary }]}
+                onPress={handleSaveSolution}
+              >
+                <ThemedText type="small" style={styles.saveButtonText}>Sačuvaj</ThemedText>
+              </Pressable>
+              <Pressable
+                style={styles.cancelEditButton}
+                onPress={() => setIsEditingSolution(false)}
+              >
+                <ThemedText type="small" style={{ color: theme.textSecondary }}>Odustani</ThemedText>
+              </Pressable>
+            </View>
+          </View>
+        ) : (
+          <ThemedText type="body" style={!service.solution ? { color: theme.textSecondary, fontStyle: "italic" } : undefined}>
+            {service.solution || "Nije uneto rešenje"}
+          </ThemedText>
+        )}
+      </View>
+
+      <View style={[styles.card, { backgroundColor: theme.backgroundDefault }]}>
+        <View style={styles.cardHeader}>
+          <Feather name="dollar-sign" size={20} color={theme.primary} />
+          <ThemedText type="h4">Cena</ThemedText>
+          {isEditable && !isEditingCost ? (
+            <Pressable
+              style={styles.editButton}
+              onPress={() => {
+                setCost(service.cost?.toString() || "");
+                setIsEditingCost(true);
+              }}
+            >
+              <Feather name="edit-2" size={16} color={theme.primary} />
+            </Pressable>
+          ) : null}
+        </View>
+        {isEditingCost ? (
+          <View>
+            <View style={styles.costInputContainer}>
+              <TextInput
+                style={[styles.costInput, { backgroundColor: theme.backgroundRoot, color: theme.text, borderColor: theme.border }]}
+                value={cost}
+                onChangeText={setCost}
+                placeholder="0"
+                placeholderTextColor={theme.textSecondary}
+                keyboardType="numeric"
+              />
+              <ThemedText type="body" style={styles.currencyLabel}>EUR</ThemedText>
+            </View>
+            <View style={styles.editActions}>
+              <Pressable
+                style={[styles.saveButton, { backgroundColor: theme.primary }]}
+                onPress={handleSaveCost}
+              >
+                <ThemedText type="small" style={styles.saveButtonText}>Sačuvaj</ThemedText>
+              </Pressable>
+              <Pressable
+                style={styles.cancelEditButton}
+                onPress={() => setIsEditingCost(false)}
+              >
+                <ThemedText type="small" style={{ color: theme.textSecondary }}>Odustani</ThemedText>
+              </Pressable>
+            </View>
+          </View>
+        ) : (
+          <ThemedText type="h3" style={!service.cost ? { color: theme.textSecondary, fontStyle: "italic", fontSize: 16 } : undefined}>
+            {service.cost ? `${service.cost} EUR` : "Nije uneta cena"}
+          </ThemedText>
+        )}
+      </View>
+
+      {canSendEmail ? (
+        <Pressable
+          style={[styles.emailButton, { backgroundColor: theme.backgroundDefault, borderColor: theme.primary }]}
+          onPress={handleSendEmail}
+        >
+          <Feather name="mail" size={18} color={theme.primary} />
+          <ThemedText type="body" style={{ color: theme.primary, marginLeft: Spacing.sm }}>
+            Pošalji email klijentu
+          </ThemedText>
+        </Pressable>
       ) : null}
 
       {service.status !== "completed" && service.status !== "cancelled" ? (
@@ -197,6 +419,52 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
     marginBottom: Spacing.sm,
   },
+  editButton: {
+    marginLeft: "auto",
+    padding: Spacing.xs,
+  },
+  textArea: {
+    borderWidth: 1,
+    borderRadius: BorderRadius.sm,
+    padding: Spacing.md,
+    fontSize: 16,
+    minHeight: 80,
+    textAlignVertical: "top",
+  },
+  editActions: {
+    flexDirection: "row",
+    gap: Spacing.md,
+    marginTop: Spacing.md,
+  },
+  saveButton: {
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.sm,
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+  cancelEditButton: {
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+  },
+  costInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+  },
+  costInput: {
+    flex: 1,
+    height: 48,
+    borderWidth: 1,
+    borderRadius: BorderRadius.sm,
+    paddingHorizontal: Spacing.md,
+    fontSize: 18,
+  },
+  currencyLabel: {
+    fontWeight: "600",
+  },
   actions: {
     marginTop: Spacing.xl,
     gap: Spacing.md,
@@ -210,5 +478,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
+  },
+  emailButton: {
+    height: Spacing.buttonHeight,
+    borderRadius: BorderRadius.full,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    marginBottom: Spacing.md,
   },
 });

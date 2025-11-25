@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { Customer, Device, Service, Maintenance } from '@/types';
 import { storage, generateId } from '@/utils/storage';
+import { sendServiceStatusNotification, sendNewServiceNotification } from '@/utils/notifications';
 
 interface DataContextType {
   customers: Customer[];
@@ -142,13 +143,44 @@ export function DataProvider({ children }: { children: ReactNode }) {
     };
     await storage.addService(service);
     setServices(prev => [...prev, service]);
+    
+    const customer = customers.find(c => c.id === data.customerId);
+    const device = devices.find(d => d.id === data.deviceId);
+    if (customer && device) {
+      try {
+        await sendNewServiceNotification(
+          service.id,
+          customer.name,
+          `${device.brand} ${device.model}`
+        );
+      } catch (error) {
+        console.log('Failed to send new service notification:', error);
+      }
+    }
+    
     return service;
   };
 
   const updateService = async (service: Service) => {
+    const existingService = services.find(s => s.id === service.id);
     const updated = { ...service, updatedAt: new Date().toISOString().split('T')[0] };
     await storage.updateService(updated);
     setServices(prev => prev.map(s => s.id === updated.id ? updated : s));
+    
+    if (existingService && existingService.status !== service.status) {
+      const customer = customers.find(c => c.id === service.customerId);
+      if (customer) {
+        try {
+          await sendServiceStatusNotification(
+            service.id,
+            customer.name,
+            service.status
+          );
+        } catch (error) {
+          console.log('Failed to send status notification:', error);
+        }
+      }
+    }
   };
 
   const deleteService = async (id: string) => {

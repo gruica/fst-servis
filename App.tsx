@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, ActivityIndicator, View } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, ActivityIndicator, View, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -12,10 +12,17 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DataProvider } from "@/contexts/DataContext";
 import { useTheme } from "@/hooks/useTheme";
+import { registerForPushNotifications } from "@/utils/notifications";
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
   const { theme } = useTheme();
+
+  useEffect(() => {
+    if (Platform.OS !== "web") {
+      registerForPushNotifications().catch(console.log);
+    }
+  }, []);
 
   if (isLoading) {
     return (

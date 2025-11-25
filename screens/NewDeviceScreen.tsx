@@ -1,5 +1,6 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import { View, StyleSheet, TextInput, Alert, Pressable, ScrollView } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,13 +26,21 @@ export default function NewDeviceScreen({ navigation, route }: Props) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const { addDevice } = useData();
-  const { customerId } = route.params;
+  const { customerId, scannedData } = route.params;
 
   const [type, setType] = useState<DeviceType>("washing_machine");
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [serialNumber, setSerialNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (scannedData) {
+      if (scannedData.brand) setBrand(scannedData.brand);
+      if (scannedData.model) setModel(scannedData.model);
+      if (scannedData.serialNumber) setSerialNumber(scannedData.serialNumber);
+    }
+  }, [scannedData]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -75,6 +84,10 @@ export default function NewDeviceScreen({ navigation, route }: Props) {
     }
   };
 
+  const handleOpenScanner = () => {
+    navigation.navigate("QRScanner", { customerId });
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView
@@ -82,6 +95,30 @@ export default function NewDeviceScreen({ navigation, route }: Props) {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + Spacing.xl }]}
         keyboardShouldPersistTaps="handled"
       >
+        <Pressable
+          style={[styles.scanButton, { backgroundColor: theme.primary }]}
+          onPress={handleOpenScanner}
+        >
+          <Feather name="camera" size={24} color="#fff" />
+          <View style={styles.scanButtonContent}>
+            <ThemedText type="body" style={styles.scanButtonTitle}>
+              Skeniraj QR/Bar kod
+            </ThemedText>
+            <ThemedText type="small" style={styles.scanButtonSubtitle}>
+              Brzo dodajte uređaj skeniranjem koda
+            </ThemedText>
+          </View>
+          <Feather name="chevron-right" size={24} color="#fff" />
+        </Pressable>
+
+        <View style={styles.divider}>
+          <View style={[styles.dividerLine, { backgroundColor: theme.border }]} />
+          <ThemedText type="small" style={[styles.dividerText, { color: theme.textSecondary }]}>
+            ili unesite ručno
+          </ThemedText>
+          <View style={[styles.dividerLine, { backgroundColor: theme.border }]} />
+        </View>
+
         <View style={styles.section}>
           <ThemedText type="h4" style={styles.sectionTitle}>Tip uređaja</ThemedText>
           <View style={styles.typeContainer}>
@@ -158,6 +195,38 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: Spacing.xl,
+  },
+  scanButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: Spacing.lg,
+    borderRadius: BorderRadius.md,
+    gap: Spacing.md,
+  },
+  scanButtonContent: {
+    flex: 1,
+  },
+  scanButtonTitle: {
+    color: "#fff",
+    fontWeight: "600",
+    marginBottom: 2,
+  },
+  scanButtonSubtitle: {
+    color: "rgba(255,255,255,0.8)",
+  },
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: Spacing["2xl"],
+    gap: Spacing.md,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+  },
+  dividerText: {
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
   },
   section: {
     marginBottom: Spacing["2xl"],
