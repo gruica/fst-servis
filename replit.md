@@ -212,11 +212,24 @@ Preferred communication style: Jednostavnim, svakodnevnim jezikom.
 
 ## Recent Changes (November 25, 2025)
 
+### Web Platform Compatibility Fix
+- Shadows constant u `constants/theme.ts` sada koristi `Platform.select` za web/native razlikovanje
+- Web koristi `boxShadow` CSS svojstvo umjesto shadow* props (eliminisani deprecation warnings)
+- Native platforme (iOS/Android) i dalje koriste shadow* props za optimalne performanse
+- Button komponenta ažurirana sa platform-aware shadow stilovima
+- ErrorFallback komponenta popravljena za web kompatibilnost
+
+### Offline-First Architecture
+- App koristi AsyncStorage sa demo podacima kao fallback
+- U development modu, backend API nije dostupan externally (Replit ograničenje)
+- Production builds će imati puni API pristup
+
 ### Backend API Setup
 - Kreiram Node.js Express backend sa pg (PostgreSQL driver)
 - Konfigurisan DATABASE_URL environment varijabla za Neon DB
 - REST API endpoints za authentication i CRUD operacije
 - Server.js file sa svim potrebnim endpointima
+- Port 8082 konfigurisan (note: external pristup limitiran u dev modu)
 
 ### Role-Based Access Control
 - Implementirani 4 uloge: admin, technician, business_partner, supplier
