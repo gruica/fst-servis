@@ -41,7 +41,7 @@ export default function ProfileScreen() {
   if (!user) return null;
 
   return (
-    <ScreenScrollView>
+    <ScreenScrollView hasTransparentHeader={false}>
       <View style={[styles.profileCard, { backgroundColor: theme.backgroundDefault }]}>
         <View style={[styles.avatar, { backgroundColor: theme.primary }]}>
           <ThemedText type="h1" style={{ color: "#fff" }}>

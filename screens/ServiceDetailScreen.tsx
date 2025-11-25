@@ -44,7 +44,7 @@ export default function ServiceDetailScreen({ navigation, route }: Props) {
 
   if (!service) {
     return (
-      <ScreenScrollView>
+      <ScreenScrollView hasTransparentHeader={false}>
         <ThemedText>Servis nije pronađen</ThemedText>
       </ScreenScrollView>
     );
@@ -139,7 +139,7 @@ export default function ServiceDetailScreen({ navigation, route }: Props) {
   const isEditable = service.status !== "completed" && service.status !== "cancelled";
 
   return (
-    <ScreenScrollView>
+    <ScreenScrollView hasTransparentHeader={false}>
       <View style={styles.headerSection}>
         <View style={styles.headerRow}>
           <ThemedText type="h3">Servis #{service.id.slice(-4)}</ThemedText>

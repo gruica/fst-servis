@@ -4,13 +4,22 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 import { Spacing } from "@/constants/theme";
 
-export function useScreenInsets() {
+interface UseScreenInsetsOptions {
+  hasTransparentHeader?: boolean;
+}
+
+export function useScreenInsets(options: UseScreenInsetsOptions = {}) {
+  const { hasTransparentHeader = true } = options;
   const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
 
+  const paddingTop = hasTransparentHeader 
+    ? headerHeight + Spacing.xl 
+    : Spacing.lg;
+
   return {
-    paddingTop: headerHeight + Spacing.xl,
+    paddingTop,
     paddingBottom: tabBarHeight + Spacing.xl,
     scrollInsetBottom: insets.bottom + 16,
   };

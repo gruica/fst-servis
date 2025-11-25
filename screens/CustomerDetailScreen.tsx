@@ -29,14 +29,14 @@ export default function CustomerDetailScreen({ navigation, route }: Props) {
 
   if (!customer) {
     return (
-      <ScreenScrollView>
+      <ScreenScrollView hasTransparentHeader={false}>
         <ThemedText>Klijent nije pronađen</ThemedText>
       </ScreenScrollView>
     );
   }
 
   return (
-    <ScreenScrollView>
+    <ScreenScrollView hasTransparentHeader={false}>
       <View style={[styles.card, { backgroundColor: theme.backgroundDefault }]}>
         <View style={styles.cardHeader}>
           <Feather name="user" size={24} color={theme.primary} />

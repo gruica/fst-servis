@@ -1,9 +1,12 @@
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
+import Constants from "expo-constants";
 import { Platform } from "react-native";
 import { ServiceStatus, STATUS_LABELS } from "@/types";
 
-if (Platform.OS !== "web") {
+const isExpoGo = Constants.appOwnership === "expo";
+
+if (Platform.OS !== "web" && !isExpoGo) {
   try {
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
@@ -15,13 +18,12 @@ if (Platform.OS !== "web") {
       }),
     });
   } catch (error) {
-    console.log("Notifications not available in this environment", error);
+    // Notifications not available
   }
 }
 
 export async function registerForPushNotifications(): Promise<string | null> {
-  if (Platform.OS === "web") {
-    console.log("Push notifications not supported on web");
+  if (Platform.OS === "web" || isExpoGo) {
     return null;
   }
 
@@ -37,7 +39,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
           lightColor: "#2563EB",
         });
       } catch (channelError) {
-        console.log("Notification channel setup not available:", channelError);
+        // Channel setup not available
       }
     }
 
@@ -51,23 +53,21 @@ export async function registerForPushNotifications(): Promise<string | null> {
       }
       
       if (finalStatus !== "granted") {
-        console.log("Push notification permission not granted");
         return null;
       }
 
-      try {
-        const tokenResponse = await Notifications.getExpoPushTokenAsync({
-          projectId: "fst-servis",
-        });
-        token = tokenResponse.data;
-      } catch (error) {
-        console.log("Error getting push token:", error);
+      const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+      if (projectId) {
+        try {
+          const tokenResponse = await Notifications.getExpoPushTokenAsync({ projectId });
+          token = tokenResponse.data;
+        } catch (error) {
+          // Token fetch failed
+        }
       }
-    } else {
-      console.log("Push notifications require a physical device");
     }
   } catch (error) {
-    console.log("Push notifications not available:", error);
+    // Push notifications not available
   }
 
   return token;

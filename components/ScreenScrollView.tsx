@@ -4,14 +4,21 @@ import { useTheme } from "@/hooks/useTheme";
 import { useScreenInsets } from "@/hooks/useScreenInsets";
 import { Spacing } from "@/constants/theme";
 
+interface ScreenScrollViewProps extends ScrollViewProps {
+  hasTransparentHeader?: boolean;
+}
+
 export function ScreenScrollView({
   children,
   contentContainerStyle,
   style,
+  hasTransparentHeader = true,
   ...scrollViewProps
-}: ScrollViewProps) {
+}: ScreenScrollViewProps) {
   const { theme } = useTheme();
-  const { paddingTop, paddingBottom, scrollInsetBottom } = useScreenInsets();
+  const { paddingTop, paddingBottom, scrollInsetBottom } = useScreenInsets({ 
+    hasTransparentHeader 
+  });
 
   return (
     <ScrollView

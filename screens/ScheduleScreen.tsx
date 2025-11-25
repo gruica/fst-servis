@@ -95,6 +95,7 @@ export default function ScheduleScreen() {
 
   return (
     <ScreenScrollView
+      hasTransparentHeader={false}
       refreshControl={
         <RefreshControl refreshing={isLoading} onRefresh={refreshData} />
       }

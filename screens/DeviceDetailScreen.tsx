@@ -25,14 +25,14 @@ export default function DeviceDetailScreen({ route }: Props) {
 
   if (!device) {
     return (
-      <ScreenScrollView>
+      <ScreenScrollView hasTransparentHeader={false}>
         <ThemedText>Uređaj nije pronađen</ThemedText>
       </ScreenScrollView>
     );
   }
 
   return (
-    <ScreenScrollView>
+    <ScreenScrollView hasTransparentHeader={false}>
       <View style={[styles.card, { backgroundColor: theme.backgroundDefault }]}>
         <View style={styles.cardHeader}>
           <Feather name="box" size={24} color={theme.primary} />
