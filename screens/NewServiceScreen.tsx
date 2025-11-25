@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTheme } from "@/hooks/useTheme";
+import { useAuth } from "@/contexts/AuthContext";
 import { useData } from "@/contexts/DataContext";
 import { ServicesStackParamList } from "@/navigation/ServicesStackNavigator";
 import { Priority, PRIORITY_LABELS, DEVICE_TYPE_LABELS } from "@/types";
@@ -22,6 +23,7 @@ const PRIORITIES: Priority[] = ["low", "medium", "high", "urgent"];
 export default function NewServiceScreen({ navigation, route }: Props) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
   const { customers, devices, addService } = useData();
 
   const initialCustomerId = route.params?.customerId;
@@ -74,6 +76,7 @@ export default function NewServiceScreen({ navigation, route }: Props) {
         status: "pending",
         priority,
         description: description.trim(),
+        createdByUserId: user?.id,
       });
       navigation.goBack();
     } catch {

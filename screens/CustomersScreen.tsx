@@ -6,6 +6,7 @@ import { ScreenFlatList } from "@/components/ScreenFlatList";
 import { CustomerCard } from "@/components/CustomerCard";
 import { EmptyState } from "@/components/EmptyState";
 import { useTheme } from "@/hooks/useTheme";
+import { useAuth } from "@/contexts/AuthContext";
 import { useData } from "@/contexts/DataContext";
 import { CustomersStackParamList } from "@/navigation/CustomersStackNavigator";
 import { Customer } from "@/types";
@@ -17,11 +18,19 @@ type Props = {
 
 export default function CustomersScreen({ navigation }: Props) {
   const { theme } = useTheme();
+  const { user } = useAuth();
   const { customers, devices, isLoading, refreshData } = useData();
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredCustomers = useMemo(() => {
-    return customers
+    let customersList = customers;
+    
+    // Poslovni partneri vide samo svoje klijente
+    if (user?.role === 'business_partner') {
+      customersList = customersList.filter(c => c.createdByUserId === user.id);
+    }
+    
+    return customersList
       .filter(customer => {
         if (searchQuery) {
           const query = searchQuery.toLowerCase();
@@ -34,7 +43,7 @@ export default function CustomersScreen({ navigation }: Props) {
         return true;
       })
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [customers, searchQuery]);
+  }, [customers, searchQuery, user]);
 
   const handleCustomerPress = (customer: Customer) => {
     navigation.navigate("CustomerDetail", { customerId: customer.id });
