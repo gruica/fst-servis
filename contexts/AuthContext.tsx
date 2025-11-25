@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types';
 import { storage } from '@/utils/storage';
+import { authApi } from '@/utils/api';
 
 interface AuthContextType {
   user: User | null;
@@ -82,6 +83,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (email: string, password: string): Promise<boolean> => {
+    // Prvo pokušaj sa backend API-jem
+    try {
+      const response = await authApi.login(email, password);
+      if (response.success && response.data) {
+        const userData = response.data as User;
+        setUser(userData);
+        await storage.setUser(userData);
+        return true;
+      }
+    } catch {
+      // Fallback na demo korisnike ako API ne radi
+    }
+
+    // Fallback: Demo korisnike
     const found = DEMO_USERS.find(
       u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
     );

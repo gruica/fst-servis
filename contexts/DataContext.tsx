@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useCa
 import { Customer, Device, Service, Maintenance } from '@/types';
 import { storage, generateId } from '@/utils/storage';
 import { sendServiceStatusNotification, sendNewServiceNotification } from '@/utils/notifications';
+import { customersApi, servicesApi } from '@/utils/api';
 
 interface DataContextType {
   customers: Customer[];
@@ -61,27 +62,53 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const loadData = useCallback(async () => {
     setIsLoading(true);
     try {
+      // Pokušaj da učita sa backend API-ja
+      const [customersRes, servicesRes] = await Promise.all([
+        customersApi.list(),
+        servicesApi.list(),
+      ]);
+
+      if (customersRes.success && customersRes.data) {
+        setCustomers(customersRes.data as Customer[]);
+      } else {
+        // Fallback na lokalno skladištenje
+        const [loadedCustomers, loadedDevices, loadedServices, loadedMaintenances] = await Promise.all([
+          storage.getCustomers(),
+          storage.getDevices(),
+          storage.getServices(),
+          storage.getMaintenances(),
+        ]);
+
+        if (loadedCustomers.length === 0) {
+          await storage.setCustomers(SAMPLE_CUSTOMERS);
+          await storage.setDevices(SAMPLE_DEVICES);
+          await storage.setServices(SAMPLE_SERVICES);
+          setCustomers(SAMPLE_CUSTOMERS);
+          setDevices(SAMPLE_DEVICES);
+          setServices(SAMPLE_SERVICES);
+        } else {
+          setCustomers(loadedCustomers);
+          setDevices(loadedDevices);
+          setServices(loadedServices);
+        }
+        setMaintenances(loadedMaintenances);
+      }
+
+      if (servicesRes.success && servicesRes.data) {
+        setServices(servicesRes.data as Service[]);
+      }
+    } catch {
+      // Fallback na lokalno skladištenje
       const [loadedCustomers, loadedDevices, loadedServices, loadedMaintenances] = await Promise.all([
         storage.getCustomers(),
         storage.getDevices(),
         storage.getServices(),
         storage.getMaintenances(),
       ]);
-
-      if (loadedCustomers.length === 0) {
-        await storage.setCustomers(SAMPLE_CUSTOMERS);
-        await storage.setDevices(SAMPLE_DEVICES);
-        await storage.setServices(SAMPLE_SERVICES);
-        setCustomers(SAMPLE_CUSTOMERS);
-        setDevices(SAMPLE_DEVICES);
-        setServices(SAMPLE_SERVICES);
-      } else {
-        setCustomers(loadedCustomers);
-        setDevices(loadedDevices);
-        setServices(loadedServices);
-      }
+      setCustomers(loadedCustomers);
+      setDevices(loadedDevices);
+      setServices(loadedServices);
       setMaintenances(loadedMaintenances);
-    } catch {
     } finally {
       setIsLoading(false);
     }
@@ -96,6 +123,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const addCustomer = async (data: Omit<Customer, 'id' | 'createdAt'>): Promise<Customer> => {
+    // Pokušaj sa API-jem
+    const apiRes = await customersApi.create(data as any);
+    if (apiRes.success && apiRes.data) {
+      const customer = apiRes.data as Customer;
+      setCustomers(prev => [...prev, customer]);
+      return customer;
+    }
+
+    // Fallback na lokalno skladištenje
     const customer: Customer = {
       ...data,
       id: generateId(),
@@ -107,6 +143,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const updateCustomer = async (customer: Customer) => {
+    // Pokušaj sa API-jem
+    await customersApi.update(customer.id, customer);
+    // I lokalno
     await storage.updateCustomer(customer);
     setCustomers(prev => prev.map(c => c.id === customer.id ? customer : c));
   };
