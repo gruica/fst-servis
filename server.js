@@ -11,7 +11,6 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-// Test konekcija
 pool.on('error', (err) => {
   console.error('Pool error:', err);
 });
@@ -26,7 +25,7 @@ app.post('/api/auth/login', async (req, res) => {
     );
     
     if (result.rows.length > 0) {
-      res.json({ success: true, user: result.rows[0] });
+      res.json({ success: true, data: result.rows[0] });
     } else {
       res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
@@ -39,31 +38,44 @@ app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
     const result = await pool.query(
-      'INSERT INTO users (email, password, name) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO users (email, password, full_name) VALUES ($1, $2, $3) RETURNING *',
       [email, password, name]
     );
-    res.json({ success: true, user: result.rows[0] });
+    res.json({ success: true, data: result.rows[0] });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// ===== CUSTOMERS ENDPOINTS =====
+// ===== CUSTOMERS/CLIENTS ENDPOINTS =====
 app.get('/api/customers', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM customers ORDER BY created_at DESC');
+    const result = await pool.query(`
+      SELECT 
+        id,
+        full_name as name,
+        email,
+        phone,
+        address,
+        city,
+        created_at,
+        created_by as "createdByUserId"
+      FROM clients 
+      ORDER BY created_at DESC
+    `);
     res.json({ success: true, data: result.rows });
   } catch (error) {
+    console.error('Customers error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
 app.post('/api/customers', async (req, res) => {
   try {
-    const { name, phone, email, address } = req.body;
+    const { name, phone, email, address, city, createdByUserId } = req.body;
     const result = await pool.query(
-      'INSERT INTO customers (name, phone, email, address) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, phone, email, address]
+      'INSERT INTO clients (full_name, phone, email, address, city, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, phone, email, address, city, createdByUserId]
     );
     res.json({ success: true, data: result.rows[0] });
   } catch (error) {
@@ -73,7 +85,19 @@ app.post('/api/customers', async (req, res) => {
 
 app.get('/api/customers/:id', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM customers WHERE id = $1', [req.params.id]);
+    const result = await pool.query(`
+      SELECT 
+        id,
+        full_name as name,
+        email,
+        phone,
+        address,
+        city,
+        created_at,
+        created_by as "createdByUserId"
+      FROM clients 
+      WHERE id = $1
+    `, [req.params.id]);
     res.json({ success: true, data: result.rows[0] });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -82,10 +106,10 @@ app.get('/api/customers/:id', async (req, res) => {
 
 app.put('/api/customers/:id', async (req, res) => {
   try {
-    const { name, phone, email, address } = req.body;
+    const { name, phone, email, address, city } = req.body;
     const result = await pool.query(
-      'UPDATE customers SET name = $1, phone = $2, email = $3, address = $4 WHERE id = $5 RETURNING *',
-      [name, phone, email, address, req.params.id]
+      'UPDATE clients SET full_name = $1, phone = $2, email = $3, address = $4, city = $5 WHERE id = $6 RETURNING *',
+      [name, phone, email, address, city, req.params.id]
     );
     res.json({ success: true, data: result.rows[0] });
   } catch (error) {
@@ -96,10 +120,55 @@ app.put('/api/customers/:id', async (req, res) => {
 // ===== SERVICES ENDPOINTS =====
 app.get('/api/services', async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT s.*, c.name as customer_name FROM services s LEFT JOIN customers c ON s.customer_id = c.id ORDER BY s.created_at DESC'
-    );
+    const result = await pool.query(`
+      SELECT 
+        s.id,
+        s.client_id as "customerId",
+        s.appliance_id as "applianceId",
+        s.technician_id as "technicianId",
+        s.description,
+        s.status,
+        s.warranty_status as "warrantyStatus",
+        s.created_at as "createdAt",
+        s.scheduled_date as "scheduledDate",
+        s.completed_date as "completedDate",
+        s.technician_notes as "technicianNotes",
+        s.cost,
+        s.used_parts as "usedParts",
+        s.machine_notes as "machineNotes",
+        s.is_completely_fixed as "isCompletelyFixed",
+        s.business_partner_id as "businessPartnerId",
+        c.full_name as "customerName",
+        a.model as "applianceModel",
+        m.name as "applianceBrand"
+      FROM services s 
+      LEFT JOIN clients c ON s.client_id = c.id 
+      LEFT JOIN appliances a ON s.appliance_id = a.id
+      LEFT JOIN manufacturers m ON a.manufacturer_id = m.id
+      ORDER BY s.created_at DESC
+    `);
     res.json({ success: true, data: result.rows });
+  } catch (error) {
+    console.error('Services error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/services/:id', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        s.*,
+        c.full_name as "customerName",
+        a.model as "applianceModel",
+        m.name as "applianceBrand"
+      FROM services s 
+      LEFT JOIN clients c ON s.client_id = c.id 
+      LEFT JOIN appliances a ON s.appliance_id = a.id
+      LEFT JOIN manufacturers m ON a.manufacturer_id = m.id
+      WHERE s.id = $1
+    `, [req.params.id]);
+    res.json({ success: true, data: result.rows[0] });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -107,10 +176,10 @@ app.get('/api/services', async (req, res) => {
 
 app.post('/api/services', async (req, res) => {
   try {
-    const { customer_id, device_type, description, status, priority } = req.body;
+    const { customerId, applianceId, description, status, technicianId } = req.body;
     const result = await pool.query(
-      'INSERT INTO services (customer_id, device_type, description, status, priority) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [customer_id, device_type, description, status, priority]
+      'INSERT INTO services (client_id, appliance_id, description, status, technician_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [customerId, applianceId, description, status || 'pending', technicianId]
     );
     res.json({ success: true, data: result.rows[0] });
   } catch (error) {
@@ -120,12 +189,45 @@ app.post('/api/services', async (req, res) => {
 
 app.put('/api/services/:id', async (req, res) => {
   try {
-    const { description, status, priority, diagnosis, solution } = req.body;
+    const { description, status, technicianNotes, cost, completedDate } = req.body;
     const result = await pool.query(
-      'UPDATE services SET description = $1, status = $2, priority = $3, diagnosis = $4, solution = $5, updated_at = NOW() WHERE id = $6 RETURNING *',
-      [description, status, priority, diagnosis, solution, req.params.id]
+      `UPDATE services SET 
+        description = COALESCE($1, description), 
+        status = COALESCE($2, status), 
+        technician_notes = COALESCE($3, technician_notes),
+        cost = COALESCE($4, cost),
+        completed_date = COALESCE($5, completed_date)
+      WHERE id = $6 RETURNING *`,
+      [description, status, technicianNotes, cost, completedDate, req.params.id]
     );
     res.json({ success: true, data: result.rows[0] });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ===== APPLIANCES ENDPOINTS =====
+app.get('/api/appliances', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        a.*,
+        c.full_name as "clientName"
+      FROM appliances a
+      LEFT JOIN clients c ON a.client_id = c.id
+      ORDER BY a.id DESC
+    `);
+    res.json({ success: true, data: result.rows });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ===== TECHNICIANS ENDPOINTS =====
+app.get('/api/technicians', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM technicians ORDER BY name');
+    res.json({ success: true, data: result.rows });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -136,8 +238,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'FST Servis API is running' });
 });
 
-const PORT = process.env.PORT || 8082;
+const PORT = 8082;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`FST Servis Backend API running on port ${PORT}`);
-  console.log(`Database connected: ${process.env.DATABASE_URL.split('@')[1] || 'Neon'}`);
+  console.log(`Database connected: ${process.env.DATABASE_URL ? process.env.DATABASE_URL.split('@')[1] : 'Not configured'}`);
 });

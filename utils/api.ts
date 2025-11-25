@@ -5,15 +5,11 @@ function getApiUrl(): string {
   const replitDevDomain = process.env.EXPO_PUBLIC_REPLIT_DEV_DOMAIN || 
     Constants.expoConfig?.extra?.replitDevDomain;
   
-  if (Platform.OS === 'web') {
-    return process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8082';
-  }
-  
   if (replitDevDomain) {
     return `https://3000-${replitDevDomain}`;
   }
   
-  return process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8082';
+  return 'http://localhost:8082';
 }
 
 const API_URL = getApiUrl();
