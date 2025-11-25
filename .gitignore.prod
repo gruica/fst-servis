@@ -1,0 +1,12 @@
+# Production build
+dist/
+build/
+.eas/
+
+# Environment
+.env.production
+google-play-service-account.json
+
+# Keys
+*.p12
+*.provisioningprofile

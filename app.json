@@ -8,9 +8,21 @@
     "scheme": "fstservis",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_APP_START",
+      "fallbackToCacheTimeout": 0
+    },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "me.tehnikamn.fstservis"
+      "bundleIdentifier": "me.tehnikamn.fstservis",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Pristup galeriji za slike uređaja",
+        "NSCameraUsageDescription": "Kamera za dokumentovanje servisa",
+        "NSLocationWhenInUseUsageDescription": "Lokacija za plaćanje putnog naloga"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +33,14 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "me.tehnikamn.fstservis"
+      "package": "me.tehnikamn.fstservis",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "output": "single",

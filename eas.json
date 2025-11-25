@@ -1,0 +1,41 @@
+{
+  "cli": {
+    "version": ">= 5.0.0"
+  },
+  "build": {
+    "production": {
+      "ios": {
+        "image": "latest",
+        "buildType": "archive",
+        "provisioning": {
+          "provisioning_profile": "auto",
+          "signingCertificate": "auto"
+        }
+      },
+      "android": {
+        "image": "latest",
+        "buildType": "apk"
+      }
+    },
+    "preview": {
+      "ios": {
+        "image": "latest",
+        "buildType": "simulator"
+      },
+      "android": {
+        "image": "latest",
+        "buildType": "apk"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "requiresSigningCredentials": true
+      },
+      "android": {
+        "serviceAccount": "google-play-service-account.json"
+      }
+    }
+  }
+}
