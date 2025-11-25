@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TextInput, Alert, FlatList, Pressable } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useIsFocused } from '@react-navigation/native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/Button';
@@ -32,7 +33,8 @@ const DEMO_PARTNERS: Partner[] = [
 export default function AdminPartnersScreen() {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const { user } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
+  const isFocused = useIsFocused();
   const [partners, setPartners] = useState<Partner[]>(DEMO_PARTNERS);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -42,10 +44,40 @@ export default function AdminPartnersScreen() {
     phone: '',
   });
 
-  if (user?.role !== 'admin') {
+  useEffect(() => {
+    if (!isAuthenticated && isFocused) {
+      console.log("User logged out, triggering navigation");
+    }
+  }, [isAuthenticated, isFocused]);
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Odjava",
+      "Da li ste sigurni da želite da se odjavite?",
+      [
+        { text: "Odustani", style: "cancel" },
+        {
+          text: "Odjavi se",
+          style: "destructive",
+          onPress: async () => {
+            await logout();
+          },
+        },
+      ]
+    );
+  };
+
+  const isAdmin = user?.role === 'admin';
+
+  if (!isAdmin) {
     return (
       <ThemedView style={[styles.container, { paddingTop: insets.top }]}>
-        <ThemedText>Samo admin može upravljati partnerima.</ThemedText>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Spacing.xl }}>
+          <ThemedText type="h3" style={{ marginBottom: Spacing.lg, textAlign: 'center' }}>Postavke</ThemedText>
+          <Button onPress={handleLogout} style={{ backgroundColor: theme.error, marginTop: Spacing.lg }}>
+            Odjavi se
+          </Button>
+        </View>
       </ThemedView>
     );
   }
