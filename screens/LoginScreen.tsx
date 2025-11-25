@@ -8,7 +8,7 @@ import { Button } from "@/components/Button";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { Spacing, BorderRadius } from "@/constants/theme";
-import { loginWithGoogle, loginWithFacebook, loginWithGithub } from "@/utils/oauth";
+import { loginWithGoogle, loginWithFacebook, loginWithGithub, loginWithX, loginWithInstagram } from "@/utils/oauth";
 
 export default function LoginScreen() {
   const { theme } = useTheme();
@@ -18,13 +18,15 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSocialLogin = async (provider: 'google' | 'facebook' | 'github') => {
+  const handleSocialLogin = async (provider: 'google' | 'facebook' | 'github' | 'x' | 'instagram') => {
     setIsLoading(true);
     try {
       let user = null;
       if (provider === 'google') user = await loginWithGoogle();
       else if (provider === 'facebook') user = await loginWithFacebook();
       else if (provider === 'github') user = await loginWithGithub();
+      else if (provider === 'x') user = await loginWithX();
+      else if (provider === 'instagram') user = await loginWithInstagram();
 
       if (user) {
         await loginWithOAuth(user);
@@ -117,6 +119,7 @@ export default function LoginScreen() {
               style={[styles.socialButton, { backgroundColor: theme.backgroundDefault, borderColor: theme.border }]}
               onPress={() => handleSocialLogin('google')}
               disabled={isLoading}
+              title="Google"
             >
               <Feather name="mail" size={20} color="#DB4437" />
             </Pressable>
@@ -124,6 +127,7 @@ export default function LoginScreen() {
               style={[styles.socialButton, { backgroundColor: theme.backgroundDefault, borderColor: theme.border }]}
               onPress={() => handleSocialLogin('facebook')}
               disabled={isLoading}
+              title="Facebook"
             >
               <Feather name="facebook" size={20} color="#1877F2" />
             </Pressable>
@@ -131,8 +135,25 @@ export default function LoginScreen() {
               style={[styles.socialButton, { backgroundColor: theme.backgroundDefault, borderColor: theme.border }]}
               onPress={() => handleSocialLogin('github')}
               disabled={isLoading}
+              title="GitHub"
             >
               <Feather name="github" size={20} color={theme.text} />
+            </Pressable>
+            <Pressable
+              style={[styles.socialButton, { backgroundColor: theme.backgroundDefault, borderColor: theme.border }]}
+              onPress={() => handleSocialLogin('x')}
+              disabled={isLoading}
+              title="X"
+            >
+              <Feather name="twitter" size={20} color="#000" />
+            </Pressable>
+            <Pressable
+              style={[styles.socialButton, { backgroundColor: theme.backgroundDefault, borderColor: theme.border }]}
+              onPress={() => handleSocialLogin('instagram')}
+              disabled={isLoading}
+              title="Instagram"
+            >
+              <Feather name="camera" size={20} color="#E1306C" />
             </Pressable>
           </View>
 

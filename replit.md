@@ -2,158 +2,199 @@
 
 ## Overview
 
-FST Servis is a professional mobile application built with React Native and Expo for managing white appliance service operations. The app enables service technicians and administrators to manage customers, track service requests, maintain device records, schedule maintenance, and generate reports while working in the field. It features a modern, tab-based interface with authentication, real-time data management, and integrated notification and email capabilities.
+FST Servis je profesionalna mobilna aplikacija sagrađena sa React Native i Expo SDK 54 za upravljanje servisnim operacijama bele tehnike. Aplikacija omogućava servisnim tehnicijarima i administratorima da upravljaju kupcima, prate zahtjeve za servis, održavaju evidenciju uređaja, planiraju održavanje i generišu izvještaje tokom rada u terenu. Aplikacija ima modernu karticu sa tab navigacijom, autentifikacijom, menadžmentom podataka u realnom vremenu, integrisanom push notifikacijom, email mogućnostima, i multi-role sistemom sa OAuth social login integracijom za sve društvene mreže.
 
 ## User Preferences
 
-Preferred communication style: Simple, everyday language.
+Preferred communication style: Jednostavnim, svakodnevnim jezikom.
 
 ## System Architecture
 
 ### Frontend Architecture
 
-**Framework**: React Native with Expo SDK 54
-- **Navigation**: React Navigation v7 with bottom tab navigation and stack navigators
-- **State Management**: React Context API for authentication (AuthContext) and data management (DataContext)
-- **UI Components**: Custom themed components built on React Native primitives
-- **Animations**: Reanimated 4 for smooth, performant animations
-- **Gesture Handling**: React Native Gesture Handler for interactive UI elements
-- **Keyboard Management**: React Native Keyboard Controller for improved form handling
+**Framework**: React Native sa Expo SDK 54
+- **Navigation**: React Navigation v7 sa tab navigacijom na dnu i stack navigatorima
+- **State Management**: React Context API za autentifikaciju (AuthContext) i upravljanje podacima (DataContext)
+- **UI Components**: Prilagođene komponente gradirane na React Native primitivama
+- **Animations**: Reanimated 4 za glatke, performantne animacije
+- **Gesture Handling**: React Native Gesture Handler za interaktivne UI elemente
+- **Keyboard Management**: React Native Keyboard Controller za poboljšano rukovanje formama
+- **Social Authentication**: expo-auth-session za OAuth integraciju
 
 **Design System**:
-- Theme system supporting light/dark modes with automatic system preference detection
-- Consistent spacing, typography, and color tokens defined in `constants/theme.ts`
-- Custom components (Button, Card, ThemedText, ThemedView) that automatically adapt to theme
-- Status badges and priority indicators with semantic colors
+- Sistem tema sa podrškom za light/dark mode sa automatskom detekcijom sistemske postavke
+- Dosledan spacing, tipografija i color tokens definisani u `constants/theme.ts`
+- Prilagođene komponente (Button, Card, ThemedText, ThemedView) koje se automatski prilagođavaju temi
+- Status bedževi i prioritetni indikatori sa semantičkim bojama
 
 **Screen Structure**:
-- 4 main tabs: Services (home), Customers, Schedule, Reports
-- Stack navigation within each tab for detail screens
-- Modal presentation for create/edit forms
-- Floating Action Button for quick service creation
+- 4 glavne kartice: Servisi (početna), Klijenti, Raspored, Izvještaji
+- Stack navigacija unutar svake kartice za detalje
+- Modalni prikaz za kreiraj/uredi forme
+- Plutajuća akciona dugme za brzo kreiranje servisa
 
 ### Authentication & Authorization
 
-**Approach**: Mock authentication with local storage persistence
-- Email/password authentication flow
-- Two demo users: admin and technician roles
-- Session persistence using AsyncStorage
-- Role-based UI adjustments (admin vs technician)
-- Future-ready for backend integration
+**Pristup**: Kombinovana autentifikacija
+- Email/lozinka autentifikacija sa 6 demo naloga
+- **Social Login**: Google, Facebook, GitHub, X (Twitter), Instagram preko `expo-auth-session`
+- Dva administratorska naloga: admin i tehnički menadžer
+- Dva korisnika: obični tehnicijar i rezervni dijelovi dobavljač
+- Dva poslovnih partnera sa custom kredencijalima za ElektroShop i DelParts
+- Persistencija sesije korištenjem AsyncStorage
+- Role-based UI prilagođavanja (admin vs tehnicijar vs partner vs dobavljač)
+- Sigurna prijava via OAuth
 
-**Current Implementation**:
-- Demo credentials stored in AuthContext
-- Protected routes via conditional rendering based on `isAuthenticated` state
-- Logout functionality with confirmation dialog
+**Demo Nalozi**:
+1. admin@fst.me / admin123 (Administrator)
+2. serviser@fst.me / serviser123 (Tehnician)
+3. partner@fst.me / partner123 (Business Partner - ElektroShop D.O.O)
+4. supplier@fst.me / supplier123 (Dobavljač - DelParts)
 
 ### Data Management
 
-**Strategy**: Local-first with AsyncStorage persistence
-- All CRUD operations managed through DataContext
-- Sample data pre-populated for demonstration
-- Optimistic UI updates with async persistence
-- Data relationships maintained through IDs (customer -> devices -> services)
+**Strategija**: Lokalni-prvo sa AsyncStorage persistencijom
+- Svi CRUD operacije menadžovani kroz DataContext
+- Uzorak podataka za demonstraciju
+- Optimistički UI updates sa async persistencijom
+- Veze podataka održavane kroz ID-jeve (kupicc -> uređaji -> servisi)
 
-**Data Models**:
-- **Customer**: Contact information, address, notes
-- **Device**: Type, brand, model, serial number, linked to customer
-- **Service**: Status, priority, description, diagnosis, solution, photos, linked to customer and device
-- **Maintenance**: Scheduled maintenance records (type defined, implementation pending)
-- **User**: Authentication and profile information
+**Modeli podataka**:
+- **Kupicc**: Kontakt informacije, adresa, beleške, `createdByUserId`
+- **Uređaj**: Tip, marka, model, serijski broj, povezan sa kupcem
+- **Servis**: Status, prioritet, opis, dijagnoza, rešenje, fotografije, `createdByUserId`
+- **Održavanje**: Evidencije planiranog održavanja
+- **Korisnik**: Autentifikacija, profil, uloga
 
-**Future Database Migration**:
-- Architecture designed for easy migration to backend API
-- All data operations abstracted through context providers
-- ID generation using utility functions ready for UUID replacement
+**Role-Based Access**:
+- **Business Partners** vide samo svoje klijente i servise koje su kreirali
+- Filtrirani prikazi na `ServicesScreen` i `CustomersScreen`
+- `createdByUserId` praćenje za sve entitete
 
 ### Device Capabilities
 
-**Camera & Image Management**:
-- QR code scanning for device serial numbers (native only)
-- Photo capture and gallery selection via expo-image-picker
-- Multiple photo attachments per service record
-- Fallback UI for web platform (QR scanning unavailable message)
+**Kamera & Upravljanje Fotografijama**:
+- QR kod skeniranje za serijske brojeve uređaja (samo native)
+- Hvatanje fotografija i odabir iz galerije preko expo-image-picker
+- Više fotografija po zapisu o servisu
+- Fallback UI za web platformu
 
-**Push Notifications**:
-- Expo Notifications configured for service status updates
-- Permission handling for iOS and Android
-- Custom notification channels on Android
-- Service status change notifications
-- New service assignment notifications
+**Push Notifikacije**:
+- Expo Notifications konfiguriran za ažuriranja statusa servisa
+- Rukovanje dozvolama za iOS i Android
+- Prilagođeni kanali notifikacija na Android-u
+- Obavještenja promjene statusa servisa
 
-**Email Integration**:
-- Expo Mail Composer for sending service status updates to customers
-- Email availability detection (platform-specific)
-- Formatted service reports with all details
-- HTML-free plain text for universal compatibility
+**Email Integracija**:
+- Expo Mail Composer za slanje ažuriranja statusa
+- Detekcija dostupnosti emaila
+- Oblikovani izvještaji o servisu
 
-**Biometric Authentication** (Planned):
-- Face ID/Touch ID support mentioned in design guidelines
-- Not yet implemented in current codebase
+### OAuth Social Login
 
-### Platform-Specific Implementations
+**Dostupni Provajderi**:
+- ✅ Google
+- ✅ Facebook
+- ✅ GitHub
+- ✅ X (Twitter)
+- ✅ Instagram
 
-**Multi-Platform Support**:
-- iOS: Transparent headers with blur effects, biometric auth ready
-- Android: Edge-to-edge layout, material design adaptations
-- Web: Fallback components for native-only features (camera, keyboard controller)
+**Implementacija**:
+- `utils/oauth.ts` sa svim OAuth logikom
+- Automatska korisnička kreira iz social profila
+- Sigurni tokeni rukovanja kroz Replit environment vars
+- Smooth fallback na demo naloge ako OAuth nije konfiguriran
 
-**Code Splitting**:
-- Platform-specific files (`.native.tsx` for CameraScanner)
-- Conditional rendering based on Platform.OS
-- Web-specific useColorScheme hook for SSR compatibility
+**Environment Variables** (za production setup):
+- EXPO_PUBLIC_GOOGLE_CLIENT_ID
+- EXPO_PUBLIC_FACEBOOK_APP_ID
+- EXPO_PUBLIC_GITHUB_CLIENT_ID
+- EXPO_PUBLIC_X_CLIENT_ID
+- EXPO_PUBLIC_INSTAGRAM_APP_ID
+- EXPO_PUBLIC_REDIRECT_URL
+
+### Multi-Platform Support
+
+**Podrška za sve platforme**:
+- iOS: Transparentni zaglavlje sa blur efektima
+- Android: Edge-to-edge raspored, adaptacije material dizajna
+- Web: Fallback komponente za native-only funkcije
+
+**Kod razdvajanja**:
+- Platform-specific fajlovi (`.native.tsx` za CameraScanner)
+- Uslovna renderiranja bazirana na Platform.OS
+- Web-specific prilagođavanja
 
 ### Build & Deployment
 
-**Development**:
-- Replit-optimized dev server with proxy configuration
-- Expo Go for mobile testing
-- Web development server for browser testing
+**Razvoj**:
+- Replit-optimizovani dev server sa proxy konfiguracijom
+- Expo Go za mobilno testiranje
+- Web dev server za browser testiranje
 
-**Build System**:
-- Custom build script (`scripts/build.js`) for static hosting
-- QR code generation for Expo Go access
-- Landing page template for web deployment
-- Metro bundler integration
+**Build Sistem**:
+- Custom build skript (`scripts/build.js`) za static hosting
+- QR kod generisanje za Expo Go pristup
+- Landing page template za web deployment
 
 ## External Dependencies
 
 ### Core Framework
-- **Expo SDK 54**: Cross-platform app framework with managed workflow
-- **React 19.1**: UI library with experimental React Compiler enabled
+- **Expo SDK 54**: Cross-platform app framework
+- **React 19.1**: UI library
 - **React Native 0.81.5**: Mobile app framework
 
 ### Navigation & Layout
-- **React Navigation**: Bottom tabs and native stack navigators
-- **React Native Safe Area Context**: Proper inset handling for modern devices
-- **Expo Blur**: iOS blur effects for navigation bars
+- **React Navigation v7**: Tab i stack navigatori
+- **React Native Safe Area Context**: Inset rukovanje
+- **Expo Blur**: iOS blur efekti
+
+### Authentication & Social Login
+- **expo-auth-session**: OAuth2 implementacija
+- **expo-web-browser**: Web browser integracija za OAuth flow
 
 ### UI & Interactions
-- **React Native Reanimated**: High-performance animations
-- **React Native Gesture Handler**: Advanced gesture recognition
-- **React Native Keyboard Controller**: Enhanced keyboard management
-- **Expo Vector Icons** (@expo/vector-icons): Feather icon set
+- **React Native Reanimated**: Animacije
+- **React Native Gesture Handler**: Gesture recognition
+- **React Native Keyboard Controller**: Keyboard rukovanje
+- **Expo Vector Icons**: Feather icon set
 
 ### Device Features
-- **Expo Camera**: Camera access and QR scanning
-- **Expo Barcode Scanner**: QR code detection
-- **Expo Image Picker**: Photo gallery and camera access
-- **Expo Notifications**: Push notifications
-- **Expo Mail Composer**: Email composition
-- **Expo Haptics**: Tactile feedback
+- **Expo Camera**: Camera pristup i QR scanning
+- **Expo Barcode Scanner**: QR kod detekcija
+- **Expo Image Picker**: Photo gallery i camera pristup
+- **Expo Notifications**: Push notifikacije
+- **Expo Mail Composer**: Email kompoter
+- **Expo Haptics**: Taktilna povratna informacija
 
 ### Storage & Data
-- **AsyncStorage**: Local key-value storage for data persistence
-- **Expo File System**: File management for photo storage
+- **AsyncStorage**: Lokalno key-value skladištenje
+- **Expo File System**: File menadžment
 
 ### Development Tools
-- **TypeScript**: Type safety and developer experience
-- **ESLint**: Code quality and formatting
-- **Prettier**: Code formatting
-- **Babel Module Resolver**: Path aliasing (`@/` imports)
+- **TypeScript**: Type sigurnost
+- **ESLint**: Code quality
+- **Prettier**: Code formatiranje
+- **Babel Module Resolver**: Path aliasing
 
-### Future Integrations
-- Backend API (architecture ready for REST/GraphQL integration)
-- Real-time database (current local storage easily replaceable)
-- Cloud storage for photos (currently local file system)
-- Analytics service (mentioned in notification utilities)
+## Recent Changes (November 25, 2025)
+
+### Role-Based Access Control
+- Implementirani 4 uloge: admin, technician, business_partner, supplier
+- Business partneri vide samo svoje klijente i servise
+- Role-based filtering u ServicesScreen i CustomersScreen
+- CreatedByUserId praćenje
+
+### Social Login Integration
+- Dodana integracijska za Google, Facebook, GitHub, X, Instagram
+- OAuth utility sa svim logikom
+- LoginScreen sa vizuelnim dugmičima za社交 prijave
+- AuthContext proširenja sa loginWithOAuth metodom
+- Environment variables za OAuth kredencijale
+
+## Future Integrations
+
+- Backend API (arhitektura spremna)
+- Real-time baza podataka
+- Cloud storage za fotografije
+- Analytics servis

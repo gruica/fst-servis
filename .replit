@@ -92,3 +92,13 @@ value = "1"
 path = "/*"
 name = "expo-sfv-version"
 value = "0"
+
+[userenv]
+
+[userenv.shared]
+EXPO_PUBLIC_GOOGLE_CLIENT_ID = "demo-google-client-id"
+EXPO_PUBLIC_FACEBOOK_APP_ID = "demo-facebook-app-id"
+EXPO_PUBLIC_GITHUB_CLIENT_ID = "demo-github-client-id"
+EXPO_PUBLIC_X_CLIENT_ID = "demo-x-client-id"
+EXPO_PUBLIC_INSTAGRAM_APP_ID = "demo-instagram-app-id"
+EXPO_PUBLIC_REDIRECT_URL = "http://localhost:8081"
