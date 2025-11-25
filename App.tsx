@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { StyleSheet, ActivityIndicator, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, NavigationContainerRef } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -13,9 +13,21 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { DataProvider } from "@/contexts/DataContext";
 import { useTheme } from "@/hooks/useTheme";
 
+export const navigationRef = useRef<NavigationContainerRef<any>>(null);
+
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
   const { theme } = useTheme();
+
+  useEffect(() => {
+    if (!isAuthenticated && navigationRef.current) {
+      console.log("Logout detected - resetting navigation");
+      navigationRef.current.reset({
+        index: 0,
+        routes: [{ name: "Auth" }],
+      });
+    }
+  }, [isAuthenticated]);
 
   if (isLoading) {
     return (
@@ -41,7 +53,7 @@ export default function App() {
         <GestureHandlerRootView style={styles.root}>
           <KeyboardProvider>
             <AuthProvider>
-              <NavigationContainer>
+              <NavigationContainer ref={navigationRef}>
                 <AppContent />
               </NavigationContainer>
             </AuthProvider>
