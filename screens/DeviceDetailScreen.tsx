@@ -2,13 +2,13 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { RouteProp } from "@react-navigation/native";
-import { ScreenScrollView } from "@/components/ScreenScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { useData } from "@/contexts/DataContext";
-import { CustomersStackParamList } from "@/navigation/CustomersStackNavigator";
-import { DEVICE_TYPE_LABELS } from "@/types";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ScreenScrollView } from "../components/ScreenScrollView";
+import { ThemedText } from "../components/ThemedText";
+import { useTheme } from "../hooks/useTheme";
+import { useData } from "../contexts/DataContext";
+import { CustomersStackParamList } from "../navigation/CustomersStackNavigator";
+import { DEVICE_TYPE_LABELS } from "./types";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 type Props = {
   route: RouteProp<CustomersStackParamList, "DeviceDetail">;

@@ -8,8 +8,8 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { useTheme } from "@/hooks/useTheme";
-import { Spacing, Shadows } from "@/constants/theme";
+import { useTheme } from "../hooks/useTheme";
+import { Spacing, Shadows } from "./constants/theme";
 
 interface FloatingActionButtonProps {
   onPress: () => void;

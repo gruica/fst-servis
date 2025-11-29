@@ -1,12 +1,12 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ServicesScreen from "@/screens/ServicesScreen";
-import ServiceDetailScreen from "@/screens/ServiceDetailScreen";
-import NewServiceScreen from "@/screens/NewServiceScreen";
-import ProfileScreen from "@/screens/ProfileScreen";
-import { HeaderTitle } from "@/components/HeaderTitle";
-import { useTheme } from "@/hooks/useTheme";
-import { getCommonScreenOptions } from "@/navigation/screenOptions";
+import ServicesScreen from "../screens/ServicesScreen";
+import ServiceDetailScreen from "../screens/ServiceDetailScreen";
+import NewServiceScreen from "../screens/NewServiceScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import { HeaderTitle } from "../components/HeaderTitle";
+import { useTheme } from "../hooks/useTheme";
+import { getCommonScreenOptions } from "./screenOptions";
 
 export type ServicesStackParamList = {
   Services: undefined;

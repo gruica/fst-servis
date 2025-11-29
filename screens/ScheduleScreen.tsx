@@ -1,14 +1,14 @@
 import React, { useMemo, useState } from "react";
 import { View, StyleSheet, Pressable, RefreshControl } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { ScreenScrollView } from "@/components/ScreenScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { StatusBadge } from "@/components/StatusBadge";
-import { EmptyState } from "@/components/EmptyState";
-import { useTheme } from "@/hooks/useTheme";
-import { useData } from "@/contexts/DataContext";
-import { DEVICE_TYPE_LABELS } from "@/types";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ScreenScrollView } from "../components/ScreenScrollView";
+import { ThemedText } from "../components/ThemedText";
+import { StatusBadge } from "../components/StatusBadge";
+import { EmptyState } from "../components/EmptyState";
+import { useTheme } from "../hooks/useTheme";
+import { useData } from "../contexts/DataContext";
+import { DEVICE_TYPE_LABELS } from "./types";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 const DAYS = ["Ned", "Pon", "Uto", "Sri", "Čet", "Pet", "Sub"];
 const MONTHS = ["Januar", "Februar", "Mart", "April", "Maj", "Jun", "Jul", "Avgust", "Septembar", "Oktobar", "Novembar", "Decembar"];

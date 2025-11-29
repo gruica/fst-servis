@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Customer, Device, Service, Maintenance, User } from '@/types';
+import { Customer, Device, Service, Maintenance, User } from "./types";
 
 const KEYS = {
   USER: '@fst_user',

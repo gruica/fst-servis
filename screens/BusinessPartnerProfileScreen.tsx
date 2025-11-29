@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { useTheme } from '@/hooks/useTheme';
-import { useAuth } from '@/contexts/AuthContext';
-import { BUSINESS_PARTNER_CAPABILITIES, BUSINESS_PARTNER_RESTRICTIONS } from '@/utils/permissions';
-import { Spacing } from '@/constants/theme';
+import { ThemedText } from "../components/ThemedText";
+import { ThemedView } from "../components/ThemedView";
+import { useTheme } from "../hooks/useTheme";
+import { useAuth } from "../contexts/AuthContext";
+import { BUSINESS_PARTNER_CAPABILITIES, BUSINESS_PARTNER_RESTRICTIONS } from "../utils/permissions";
+import { Spacing } from "./constants/theme";
 
 export default function BusinessPartnerProfileScreen() {
   const { theme } = useTheme();

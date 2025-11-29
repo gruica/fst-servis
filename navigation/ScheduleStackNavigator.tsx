@@ -1,8 +1,8 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ScheduleScreen from "@/screens/ScheduleScreen";
-import { useTheme } from "@/hooks/useTheme";
-import { getCommonScreenOptions } from "@/navigation/screenOptions";
+import ScheduleScreen from "../screens/ScheduleScreen";
+import { useTheme } from "../hooks/useTheme";
+import { getCommonScreenOptions } from "./screenOptions";
 
 export type ScheduleStackParamList = {
   Schedule: undefined;

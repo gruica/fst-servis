@@ -6,12 +6,12 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
-import MainTabNavigator from "@/navigation/MainTabNavigator";
-import AuthStackNavigator from "@/navigation/AuthStackNavigator";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import { DataProvider } from "@/contexts/DataContext";
-import { useTheme } from "@/hooks/useTheme";
+import MainTabNavigator from "./navigation/MainTabNavigator";
+import AuthStackNavigator from "./navigation/AuthStackNavigator";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { DataProvider } from "./contexts/DataContext";
+import { useTheme } from "./hooks/useTheme";
 
 export const navigationRef = React.createRef<NavigationContainerRef<any>>();
 

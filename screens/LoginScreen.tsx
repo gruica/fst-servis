@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { View, StyleSheet, TextInput, Image, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { Button } from "@/components/Button";
-import { useTheme } from "@/hooks/useTheme";
-import { useAuth } from "@/contexts/AuthContext";
-import { Spacing, BorderRadius } from "@/constants/theme";
-import { loginWithGoogle, loginWithFacebook, loginWithGithub, loginWithX, loginWithInstagram } from "@/utils/oauth";
+import { ThemedText } from "../components/ThemedText";
+import { ThemedView } from "../components/ThemedView";
+import { Button } from "../components/Button";
+import { useTheme } from "../hooks/useTheme";
+import { useAuth } from "../contexts/AuthContext";
+import { Spacing, BorderRadius } from "./constants/theme";
+import { loginWithGoogle, loginWithFacebook, loginWithGithub, loginWithX, loginWithInstagram } from "../utils/oauth";
 
 export default function LoginScreen() {
   const { theme } = useTheme();

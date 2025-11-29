@@ -2,15 +2,15 @@ import React, { useState, useMemo } from "react";
 import { View, StyleSheet, TextInput, Pressable, RefreshControl } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { ScreenFlatList } from "@/components/ScreenFlatList";
-import { CustomerCard } from "@/components/CustomerCard";
-import { EmptyState } from "@/components/EmptyState";
-import { useTheme } from "@/hooks/useTheme";
-import { useAuth } from "@/contexts/AuthContext";
-import { useData } from "@/contexts/DataContext";
-import { CustomersStackParamList } from "@/navigation/CustomersStackNavigator";
-import { Customer } from "@/types";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ScreenFlatList } from "../components/ScreenFlatList";
+import { CustomerCard } from "../components/CustomerCard";
+import { EmptyState } from "../components/EmptyState";
+import { useTheme } from "../hooks/useTheme";
+import { useAuth } from "../contexts/AuthContext";
+import { useData } from "../contexts/DataContext";
+import { CustomersStackParamList } from "../navigation/CustomersStackNavigator";
+import { Customer } from "./types";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 type Props = {
   navigation: NativeStackNavigationProp<CustomersStackParamList, "Customers">;

@@ -1,8 +1,8 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ReportsScreen from "@/screens/ReportsScreen";
-import { useTheme } from "@/hooks/useTheme";
-import { getCommonScreenOptions } from "@/navigation/screenOptions";
+import ReportsScreen from "../screens/ReportsScreen";
+import { useTheme } from "../hooks/useTheme";
+import { getCommonScreenOptions } from "./screenOptions";
 
 export type ReportsStackParamList = {
   Reports: undefined;

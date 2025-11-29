@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { Customer, Device, Service, Maintenance } from '@/types';
-import { storage, generateId } from '@/utils/storage';
-import { sendServiceStatusNotification, sendNewServiceNotification } from '@/utils/notifications';
-import { customersApi, servicesApi } from '@/utils/api';
+import { Customer, Device, Service, Maintenance } from "./types";
+import { storage, generateId } from "../utils/storage";
+import { sendServiceStatusNotification, sendNewServiceNotification } from "../utils/notifications";
+import { customersApi, servicesApi } from "../utils/api";
 
 interface DataContextType {
   customers: Customer[];

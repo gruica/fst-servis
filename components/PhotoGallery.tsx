@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable, Modal, Image, Dimensions, Alert, Platform, ActivityIndicator } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ThemedText } from "./ThemedText";
+import { useTheme } from "../hooks/useTheme";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const IMAGE_SIZE = (SCREEN_WIDTH - Spacing.xl * 2 - Spacing.md * 2) / 3;

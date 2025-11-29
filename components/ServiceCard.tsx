@@ -6,12 +6,12 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { ThemedText } from "@/components/ThemedText";
-import { StatusBadge } from "@/components/StatusBadge";
-import { PriorityBadge } from "@/components/PriorityBadge";
-import { useTheme } from "@/hooks/useTheme";
-import { Service, DEVICE_TYPE_LABELS } from "@/types";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ThemedText } from "./ThemedText";
+import { StatusBadge } from "./StatusBadge";
+import { PriorityBadge } from "./PriorityBadge";
+import { useTheme } from "../hooks/useTheme";
+import { Service, DEVICE_TYPE_LABELS } from "./types";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 interface ServiceCardProps {
   service: Service;

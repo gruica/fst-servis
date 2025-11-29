@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import { View, StyleSheet, Alert, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
-import { ScreenScrollView } from "@/components/ScreenScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { Button } from "@/components/Button";
-import { useTheme } from "@/hooks/useTheme";
-import { useAuth } from "@/contexts/AuthContext";
-import { DEVICE_TYPE_LABELS } from "@/types";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ScreenScrollView } from "../components/ScreenScrollView";
+import { ThemedText } from "../components/ThemedText";
+import { Button } from "../components/Button";
+import { useTheme } from "../hooks/useTheme";
+import { useAuth } from "../contexts/AuthContext";
+import { DEVICE_TYPE_LABELS } from "./types";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 export default function ProfileScreen() {
   const { theme } = useTheme();

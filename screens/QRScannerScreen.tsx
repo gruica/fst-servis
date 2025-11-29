@@ -2,8 +2,8 @@ import React, { useRef, useCallback } from "react";
 import { StyleSheet } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
-import { CameraScanner } from "@/components/CameraScanner";
-import { CustomersStackParamList } from "@/navigation/CustomersStackNavigator";
+import { CameraScanner } from "../components/CameraScanner";
+import { CustomersStackParamList } from "../navigation/CustomersStackNavigator";
 
 type Props = {
   navigation: NativeStackNavigationProp<CustomersStackParamList, "QRScanner">;

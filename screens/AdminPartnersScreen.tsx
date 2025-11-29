@@ -3,12 +3,12 @@ import { View, StyleSheet, TextInput, Alert, FlatList, Pressable } from 'react-n
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Button } from '@/components/Button';
-import { useTheme } from '@/hooks/useTheme';
-import { useAuth } from '@/contexts/AuthContext';
-import { Spacing, BorderRadius } from '@/constants/theme';
+import { ThemedText } from "../components/ThemedText";
+import { ThemedView } from "../components/ThemedView";
+import { Button } from "../components/Button";
+import { useTheme } from "../hooks/useTheme";
+import { useAuth } from "../contexts/AuthContext";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 interface Partner {
   id: string;

@@ -1,10 +1,10 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { Priority, PRIORITY_LABELS } from "@/types";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ThemedText } from "./ThemedText";
+import { useTheme } from "../hooks/useTheme";
+import { Priority, PRIORITY_LABELS } from "./types";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 interface PriorityBadgeProps {
   priority: Priority;

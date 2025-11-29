@@ -4,13 +4,13 @@ import { Feather } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { useTheme } from "@/hooks/useTheme";
-import { useData } from "@/contexts/DataContext";
-import { CustomersStackParamList } from "@/navigation/CustomersStackNavigator";
-import { DeviceType, DEVICE_TYPE_LABELS } from "@/types";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ThemedText } from "../components/ThemedText";
+import { ThemedView } from "../components/ThemedView";
+import { useTheme } from "../hooks/useTheme";
+import { useData } from "../contexts/DataContext";
+import { CustomersStackParamList } from "../navigation/CustomersStackNavigator";
+import { DeviceType, DEVICE_TYPE_LABELS } from "./types";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 type Props = {
   navigation: NativeStackNavigationProp<CustomersStackParamList, "NewDevice">;

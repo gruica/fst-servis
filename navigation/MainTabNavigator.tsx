@@ -3,13 +3,13 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { Platform, StyleSheet } from "react-native";
-import ServicesStackNavigator from "@/navigation/ServicesStackNavigator";
-import CustomersStackNavigator from "@/navigation/CustomersStackNavigator";
-import ScheduleStackNavigator from "@/navigation/ScheduleStackNavigator";
-import ReportsStackNavigator from "@/navigation/ReportsStackNavigator";
-import AdminPartnersScreen from "@/screens/AdminPartnersScreen";
-import { useTheme } from "@/hooks/useTheme";
-import { useAuth } from "@/contexts/AuthContext";
+import ServicesStackNavigator from "./ServicesStackNavigator";
+import CustomersStackNavigator from "./CustomersStackNavigator";
+import ScheduleStackNavigator from "./ScheduleStackNavigator";
+import ReportsStackNavigator from "./ReportsStackNavigator";
+import AdminPartnersScreen from "../screens/AdminPartnersScreen";
+import { useTheme } from "../hooks/useTheme";
+import { useAuth } from "../contexts/AuthContext";
 
 export type MainTabParamList = {
   ServicesTab: undefined;

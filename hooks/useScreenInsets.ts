@@ -2,7 +2,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
-import { Spacing } from "@/constants/theme";
+import { Spacing } from "../constants/theme";
 
 interface UseScreenInsetsOptions {
   hasTransparentHeader?: boolean;

@@ -1,9 +1,9 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { Spacing } from "@/constants/theme";
+import { ThemedText } from "./ThemedText";
+import { useTheme } from "../hooks/useTheme";
+import { Spacing } from "./constants/theme";
 
 interface EmptyStateProps {
   icon: keyof typeof Feather.glyphMap;

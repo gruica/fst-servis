@@ -1,13 +1,13 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import CustomersScreen from "@/screens/CustomersScreen";
-import CustomerDetailScreen from "@/screens/CustomerDetailScreen";
-import NewCustomerScreen from "@/screens/NewCustomerScreen";
-import DeviceDetailScreen from "@/screens/DeviceDetailScreen";
-import NewDeviceScreen from "@/screens/NewDeviceScreen";
-import QRScannerScreen from "@/screens/QRScannerScreen";
-import { useTheme } from "@/hooks/useTheme";
-import { getCommonScreenOptions } from "@/navigation/screenOptions";
+import CustomersScreen from "../screens/CustomersScreen";
+import CustomerDetailScreen from "../screens/CustomerDetailScreen";
+import NewCustomerScreen from "../screens/NewCustomerScreen";
+import DeviceDetailScreen from "../screens/DeviceDetailScreen";
+import NewDeviceScreen from "../screens/NewDeviceScreen";
+import QRScannerScreen from "../screens/QRScannerScreen";
+import { useTheme } from "../hooks/useTheme";
+import { getCommonScreenOptions } from "./screenOptions";
 
 export type ScannedDeviceData = {
   brand?: string;

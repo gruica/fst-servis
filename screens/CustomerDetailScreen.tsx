@@ -3,15 +3,15 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
-import { ScreenScrollView } from "@/components/ScreenScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { DeviceCard } from "@/components/DeviceCard";
-import { ServiceCard } from "@/components/ServiceCard";
-import { Button } from "@/components/Button";
-import { useTheme } from "@/hooks/useTheme";
-import { useData } from "@/contexts/DataContext";
-import { CustomersStackParamList } from "@/navigation/CustomersStackNavigator";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ScreenScrollView } from "../components/ScreenScrollView";
+import { ThemedText } from "../components/ThemedText";
+import { DeviceCard } from "../components/DeviceCard";
+import { ServiceCard } from "../components/ServiceCard";
+import { Button } from "../components/Button";
+import { useTheme } from "../hooks/useTheme";
+import { useData } from "../contexts/DataContext";
+import { CustomersStackParamList } from "../navigation/CustomersStackNavigator";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 type Props = {
   navigation: NativeStackNavigationProp<CustomersStackParamList, "CustomerDetail">;

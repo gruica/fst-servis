@@ -6,10 +6,10 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { Customer } from "@/types";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ThemedText } from "./ThemedText";
+import { useTheme } from "../hooks/useTheme";
+import { Customer } from "./types";
+import { Spacing, BorderRadius } from "./constants/theme";
 
 interface CustomerCardProps {
   customer: Customer;
