@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 import { useTheme } from "../hooks/useTheme";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const SCAN_AREA_SIZE = SCREEN_WIDTH * 0.7;

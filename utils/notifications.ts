@@ -2,7 +2,7 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
-import { ServiceStatus, STATUS_LABELS } from "./types";
+import { ServiceStatus, STATUS_LABELS } from "../types";
 
 const isExpoGo = Constants.appOwnership === "expo";
 

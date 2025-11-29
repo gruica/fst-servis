@@ -9,8 +9,8 @@ import { useTheme } from "../hooks/useTheme";
 import { useAuth } from "../contexts/AuthContext";
 import { useData } from "../contexts/DataContext";
 import { CustomersStackParamList } from "../navigation/CustomersStackNavigator";
-import { Customer } from "./types";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { Customer } from "../types";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 type Props = {
   navigation: NativeStackNavigationProp<CustomersStackParamList, "Customers">;

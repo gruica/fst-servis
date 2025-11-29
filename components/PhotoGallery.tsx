@@ -4,7 +4,7 @@ import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { ThemedText } from "./ThemedText";
 import { useTheme } from "../hooks/useTheme";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const IMAGE_SIZE = (SCREEN_WIDTH - Spacing.xl * 2 - Spacing.md * 2) / 3;

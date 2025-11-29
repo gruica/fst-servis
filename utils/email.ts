@@ -1,5 +1,5 @@
 import * as MailComposer from "expo-mail-composer";
-import { Service, ServiceStatus, STATUS_LABELS, Customer, Device, DEVICE_TYPE_LABELS } from "./types";
+import { Service, ServiceStatus, STATUS_LABELS, Customer, Device, DEVICE_TYPE_LABELS } from "../types";
 
 export async function checkEmailAvailability(): Promise<boolean> {
   return await MailComposer.isAvailableAsync();

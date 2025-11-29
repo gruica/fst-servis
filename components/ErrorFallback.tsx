@@ -14,7 +14,7 @@ import { Feather } from "@expo/vector-icons";
 import { ThemedView } from "./ThemedView";
 import { ThemedText } from "./ThemedText";
 import { useTheme } from "../hooks/useTheme";
-import { Spacing, BorderRadius, Fonts } from "./constants/theme";
+import { Spacing, BorderRadius, Fonts } from "../constants/theme";
 
 export type ErrorFallbackProps = {
   error: Error;
@@ -187,8 +187,8 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
     paddingHorizontal: Spacing["2xl"],
     minWidth: 200,
-    ...(Platform.OS === 'web"
-      ? { boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' }
+    ...(Platform.OS === "web"
+      ? { boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }
       : {
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 2 },

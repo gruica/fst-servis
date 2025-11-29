@@ -2,8 +2,8 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { useTheme } from "../hooks/useTheme";
-import { ServiceStatus, STATUS_LABELS } from "./types";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { ServiceStatus, STATUS_LABELS } from "../types";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 interface StatusBadgeProps {
   status: ServiceStatus;

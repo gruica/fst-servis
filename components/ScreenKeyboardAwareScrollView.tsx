@@ -6,7 +6,7 @@ import {
 
 import { useTheme } from "../hooks/useTheme";
 import { useScreenInsets } from "../hooks/useScreenInsets";
-import { Spacing } from "./constants/theme";
+import { Spacing } from "../constants/theme";
 import { ScreenScrollView } from "./ScreenScrollView";
 
 export function ScreenKeyboardAwareScrollView({

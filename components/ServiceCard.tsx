@@ -10,8 +10,8 @@ import { ThemedText } from "./ThemedText";
 import { StatusBadge } from "./StatusBadge";
 import { PriorityBadge } from "./PriorityBadge";
 import { useTheme } from "../hooks/useTheme";
-import { Service, DEVICE_TYPE_LABELS } from "./types";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { Service, DEVICE_TYPE_LABELS } from "../types";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 interface ServiceCardProps {
   service: Service;

@@ -9,7 +9,7 @@ import Animated, {
 
 import { ThemedText } from "./ThemedText";
 import { useTheme } from "../hooks/useTheme";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 interface CardProps {
   elevation: number;

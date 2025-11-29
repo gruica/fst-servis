@@ -4,7 +4,7 @@ import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 import { useTheme } from "../hooks/useTheme";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 interface CameraScannerProps {
   onScan: (data: string) => void;

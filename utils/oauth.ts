@@ -1,6 +1,6 @@
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
-import { User } from "./types";
+import { User } from "../types";
 
 try {
   WebBrowser.maybeCompleteAuthSession();

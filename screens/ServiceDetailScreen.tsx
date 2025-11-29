@@ -12,8 +12,8 @@ import { PhotoGallery } from "../components/PhotoGallery";
 import { useTheme } from "../hooks/useTheme";
 import { useData } from "../contexts/DataContext";
 import { ServicesStackParamList } from "../navigation/ServicesStackNavigator";
-import { DEVICE_TYPE_LABELS, ServiceStatus } from "./types";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { DEVICE_TYPE_LABELS, ServiceStatus } from "../types";
+import { Spacing, BorderRadius } from "../constants/theme";
 import { sendServiceStatusEmail, checkEmailAvailability } from "../utils/email";
 
 type Props = {

@@ -9,8 +9,8 @@ import { ThemedView } from "../components/ThemedView";
 import { useTheme } from "../hooks/useTheme";
 import { useData } from "../contexts/DataContext";
 import { CustomersStackParamList } from "../navigation/CustomersStackNavigator";
-import { DeviceType, DEVICE_TYPE_LABELS } from "./types";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { DeviceType, DEVICE_TYPE_LABELS } from "../types";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 type Props = {
   navigation: NativeStackNavigationProp<CustomersStackParamList, "NewDevice">;

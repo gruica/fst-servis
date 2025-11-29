@@ -2,7 +2,7 @@ import { ScrollView, ScrollViewProps, StyleSheet } from "react-native";
 
 import { useTheme } from "../hooks/useTheme";
 import { useScreenInsets } from "../hooks/useScreenInsets";
-import { Spacing } from "./constants/theme";
+import { Spacing } from "../constants/theme";
 
 interface ScreenScrollViewProps extends ScrollViewProps {
   hasTransparentHeader?: boolean;

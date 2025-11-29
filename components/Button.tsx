@@ -9,7 +9,7 @@ import Animated, {
 
 import { ThemedText } from "./ThemedText";
 import { useTheme } from "../hooks/useTheme";
-import { BorderRadius, Spacing } from "./constants/theme";
+import { BorderRadius, Spacing } from "../constants/theme";
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'success';
 

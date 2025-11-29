@@ -10,8 +10,8 @@ import { useTheme } from "../hooks/useTheme";
 import { useAuth } from "../contexts/AuthContext";
 import { useData } from "../contexts/DataContext";
 import { ServicesStackParamList } from "../navigation/ServicesStackNavigator";
-import { Priority, PRIORITY_LABELS, DEVICE_TYPE_LABELS } from "./types";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { Priority, PRIORITY_LABELS, DEVICE_TYPE_LABELS } from "../types";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 type Props = {
   navigation: NativeStackNavigationProp<ServicesStackParamList, "NewService">;

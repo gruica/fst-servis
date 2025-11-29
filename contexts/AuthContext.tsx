@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User } from "./types";
+import { User } from "../types";
 import { storage } from "../utils/storage";
 import { authApi } from "../utils/api";
 

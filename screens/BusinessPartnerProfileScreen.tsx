@@ -6,7 +6,7 @@ import { ThemedView } from "../components/ThemedView";
 import { useTheme } from "../hooks/useTheme";
 import { useAuth } from "../contexts/AuthContext";
 import { BUSINESS_PARTNER_CAPABILITIES, BUSINESS_PARTNER_RESTRICTIONS } from "../utils/permissions";
-import { Spacing } from "./constants/theme";
+import { Spacing } from "../constants/theme";
 
 export default function BusinessPartnerProfileScreen() {
   const { theme } = useTheme();

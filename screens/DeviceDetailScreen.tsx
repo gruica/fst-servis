@@ -7,8 +7,8 @@ import { ThemedText } from "../components/ThemedText";
 import { useTheme } from "../hooks/useTheme";
 import { useData } from "../contexts/DataContext";
 import { CustomersStackParamList } from "../navigation/CustomersStackNavigator";
-import { DEVICE_TYPE_LABELS } from "./types";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { DEVICE_TYPE_LABELS } from "../types";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 type Props = {
   route: RouteProp<CustomersStackParamList, "DeviceDetail">;

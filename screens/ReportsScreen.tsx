@@ -5,8 +5,8 @@ import { ScreenScrollView } from "../components/ScreenScrollView";
 import { ThemedText } from "../components/ThemedText";
 import { useTheme } from "../hooks/useTheme";
 import { useData } from "../contexts/DataContext";
-import { DEVICE_TYPE_LABELS, STATUS_LABELS } from "./types";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { DEVICE_TYPE_LABELS, STATUS_LABELS } from "../types";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 export default function ReportsScreen() {
   const { theme } = useTheme();

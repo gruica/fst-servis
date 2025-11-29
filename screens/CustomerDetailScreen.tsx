@@ -11,7 +11,7 @@ import { Button } from "../components/Button";
 import { useTheme } from "../hooks/useTheme";
 import { useData } from "../contexts/DataContext";
 import { CustomersStackParamList } from "../navigation/CustomersStackNavigator";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { Spacing, BorderRadius } from "../constants/theme";
 
 type Props = {
   navigation: NativeStackNavigationProp<CustomersStackParamList, "CustomerDetail">;

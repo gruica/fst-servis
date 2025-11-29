@@ -12,8 +12,8 @@ import { useTheme } from "../hooks/useTheme";
 import { useAuth } from "../contexts/AuthContext";
 import { useData } from "../contexts/DataContext";
 import { ServicesStackParamList } from "../navigation/ServicesStackNavigator";
-import { Service, ServiceStatus } from "./types";
-import { Spacing, BorderRadius } from "./constants/theme";
+import { Service, ServiceStatus } from "../types";
+import { Spacing, BorderRadius } from "../constants/theme";
 import { registerForPushNotifications } from "../utils/notifications";
 
 type Props = {
